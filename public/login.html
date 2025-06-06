@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head><title>Login</title></head>
+<body>
+  <h2>Login</h2>
+  <input id="username" placeholder="Username" />
+  <input id="password" type="password" placeholder="Password" />
+  <button id="loginBtn">Login</button>
+  <p id="msg"></p>
+  <p>Belum punya akun? <a href="signup.html">Daftar di sini</a></p>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    document.getElementById('loginBtn').onclick = () => {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      localStorage.setItem('password', password);
+      socket.emit('login', { username, password });
+    };
+    socket.on('loginResult', res => {
+      if (res.success) {
+        localStorage.setItem('username', res.user);
+        window.location.href = 'index.html';
+      } else {
+        document.getElementById('msg').innerText = res.message;
+      }
+    });
+  </script>
+</body>
+</html>
