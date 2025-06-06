@@ -1,4 +1,3 @@
-// app.js
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
@@ -14,18 +13,14 @@ const UPLOAD_DIR = path.join(__dirname, 'public/uploads');
 
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, UPLOAD_DIR);
-  },
-  filename: function (req, file, cb) {
-    const uniqueName = uuidv4() + path.extname(file.originalname);
-    cb(null, uniqueName);
-  }
-});
-const upload = multer({ storage });
+app.use('/uploads', express.static(UPLOAD_DIR)); // <== Tambahkan ini agar media bisa diakses
 
-// Inisialisasi users.json
+const upload = multer({
+  dest: UPLOAD_DIR,
+  fileFilter: (req, file, cb) => cb(null, true)
+});
+
+// Inisialisasi users.json jika belum ada
 if (!fs.existsSync(USERS_FILE)) {
   fs.writeFileSync(USERS_FILE, JSON.stringify({}));
 }
@@ -36,15 +31,15 @@ if (!fs.existsSync(UPLOAD_DIR)) {
 }
 
 let onlineUsers = {};
-let messages = [];
+let messages = []; // Semua pesan disimpan di memori
 
-// Hapus pesan lebih dari 24 jam
+// Hapus pesan lebih dari 24 jam setiap menit
 setInterval(() => {
   const now = Date.now();
   messages = messages.filter(m => now - m.time < 24 * 60 * 60 * 1000);
 }, 60 * 1000);
 
-// Helper
+// Helper untuk user
 function loadUsers() {
   return JSON.parse(fs.readFileSync(USERS_FILE));
 }
@@ -55,13 +50,16 @@ function saveUsers(users) {
 // Endpoint upload file
 app.post('/upload', upload.single('media'), (req, res) => {
   if (!req.file) return res.status(400).json({ success: false });
-  const filePath = 'uploads/' + req.file.filename;
+  const filePath = '/uploads/' + req.file.filename;
   res.json({ success: true, path: filePath });
 });
 
 // Socket.IO
 io.on('connection', socket => {
   let currentUser = null;
+
+  // Kirim semua pesan sebelumnya
+  messages.forEach(m => socket.emit('message', m));
 
   socket.on('signup', data => {
     const users = loadUsers();
@@ -81,21 +79,21 @@ io.on('connection', socket => {
       onlineUsers[currentUser] = true;
       socket.emit('loginResult', { success: true, user: currentUser });
       io.emit('userList', Object.keys(onlineUsers));
-      // Kirim pesan lama setelah login
-      socket.emit('messageHistory', messages);
     } else {
       socket.emit('loginResult', { success: false, message: 'Username atau password salah' });
     }
   });
 
   socket.on('message', data => {
-    if (!currentUser) return;
+    const sender = currentUser || "Pengunjung"; // Bisa juga untuk tamu
+
     const messageData = {
       id: uuidv4(),
-      user: currentUser,
+      user: sender,
       text: data.text,
       time: Date.now()
     };
+
     messages.push(messageData);
     io.emit('message', messageData);
   });
@@ -116,5 +114,5 @@ io.on('connection', socket => {
 });
 
 http.listen(PORT, () => {
-  console.log(`Server berjalan di port ${PORT}`);
+  console.log(`Server berjalan di http://localhost:${PORT}`);
 });
