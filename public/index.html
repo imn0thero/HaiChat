@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat</title>
+</head>
+<body>
+  <h2 id="welcome"></h2>
+  <button onclick="logout()">Logout</button>
+  
+  <div>
+    <h3>Pengguna Online:</h3>
+    <div id="onlineUsers"></div>
+  </div>
+
+  <div id="chatbox" style="height:300px; overflow:auto; border:1px solid #ccc;"></div>
+
+  <input id="msgInput" placeholder="Tulis pesan..." />
+  <button onclick="sendMessage()">Kirim</button>
+
+  <br><br>
+  <input type="file" id="mediaInput" />
+  <button onclick="uploadMedia()">Kirim Media</button>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const username = localStorage.getItem('username');
+    const password = localStorage.getItem('password');
+
+    if (!username || !password) {
+      window.location.href = 'login.html';
+    }
+
+    document.getElementById('welcome').innerText = "Selamat datang, " + username;
+
+    const socket = io();
+    socket.emit('login', { username, password });
+
+    socket.on('message', data => {
+      const div = document.createElement('div');
+      if (data.text.startsWith('uploads/')) {
+        div.innerHTML = data.user + ": <a href='" + data.text + "' target='_blank'>Lihat Media</a><br><img src='" + data.text + "' width='150'/>";
+      } else {
+        div.innerText = data.user + ": " + data.text;
+      }
+      document.getElementById('chatbox').appendChild(div);
+    });
+
+    socket.on('userList', users => {
+      const userList = users.map(user => `<li>${user} 🔵</li>`).join('');
+      document.getElementById('onlineUsers').innerHTML = "<ul>" + userList + "</ul>";
+    });
+
+    function sendMessage() {
+      const text = document.getElementById('msgInput').value;
+      socket.emit('message', { text });
+      document.getElementById('msgInput').value = '';
+    }
+
+    function uploadMedia() {
+      const file = document.getElementById('mediaInput').files[0];
+      if (!file) return;
+      const formData = new FormData();
+      formData.append("media", file);
+
+      fetch("/upload", {
+        method: "POST",
+        body: formData
+      }).then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            socket.emit("message", { text: data.path });
+          }
+        });
+    }
+
+    function logout() {
+      localStorage.removeItem('username');
+      localStorage.removeItem('password');
+      socket.emit('logout');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>
