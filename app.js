@@ -4,28 +4,37 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const path = require('path');
 const fs = require('fs');
+const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 
-app.use(express.static(path.join(__dirname, 'public')));
 const PORT = process.env.PORT || 3000;
-
 const USERS_FILE = path.join(__dirname, 'users.json');
+const UPLOAD_DIR = path.join(__dirname, 'public/uploads');
 
-// Inisialisasi file users.json jika belum ada
+// Middleware
+app.use(express.static(path.join(__dirname, 'public')));
+const upload = multer({ dest: UPLOAD_DIR });
+
+// Inisialisasi users.json
 if (!fs.existsSync(USERS_FILE)) {
   fs.writeFileSync(USERS_FILE, JSON.stringify({}));
+}
+
+// Buat folder uploads jika belum ada
+if (!fs.existsSync(UPLOAD_DIR)) {
+  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
 let onlineUsers = {};
 let messages = [];
 
-// Hapus otomatis pesan > 24 jam
+// Hapus pesan lebih dari 24 jam
 setInterval(() => {
   const now = Date.now();
   messages = messages.filter(m => now - m.time < 24 * 60 * 60 * 1000);
 }, 60 * 1000);
 
-// Helper load/simpan user
+// Helper
 function loadUsers() {
   return JSON.parse(fs.readFileSync(USERS_FILE));
 }
@@ -33,6 +42,14 @@ function saveUsers(users) {
   fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
+// Endpoint upload file
+app.post('/upload', upload.single('media'), (req, res) => {
+  if (!req.file) return res.status(400).json({ success: false });
+  const filePath = 'uploads/' + req.file.filename;
+  res.json({ success: true, path: filePath });
+});
+
+// Socket.IO
 io.on('connection', socket => {
   let currentUser = null;
 
