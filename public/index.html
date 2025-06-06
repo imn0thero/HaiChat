@@ -1,33 +1,29 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>HaiChat</title>
-  <link rel="stylesheet" href="style.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HaiChat - Chat</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <h2 id="welcome"></h2>
-    <button onclick="logout()" class="logout-btn">Logout</button>
-  </header>
+  <div class="container">
+    <h2 id="welcome">Selamat datang</h2>
+    <button onclick="logout()">Logout</button>
 
-  <main>
-    <section class="users">
+    <section style="margin: 20px 0;">
       <h3>Pengguna Online:</h3>
-      <div id="onlineUsers"></div>
+      <div id="onlineUsers" style="min-height: 50px;"></div>
     </section>
 
-    <section class="chat">
-      <div id="chatbox" class="chatbox"></div>
+    <div id="chatbox" style="height: 300px; overflow-y: auto; border: 1px solid #333; border-radius: 8px; padding: 10px; background-color: #222; color: #eee; user-select: text;"></div>
 
-      <div class="input-area">
-        <input id="msgInput" type="text" placeholder="Tulis pesan..." />
-        <input type="file" id="mediaInput" />
-        <button onclick="sendMessage()">Kirim</button>
-      </div>
-    </section>
-  </main>
+    <div style="margin-top: 15px; display: flex; gap: 10px;">
+      <input id="msgInput" placeholder="Tulis pesan..." autocomplete="off" style="flex: 1; padding: 12px; border-radius: 8px; border: 2px solid #333; background-color: #121212; color: #eee; caret-color: #2196f3; font-size: 1rem;" />
+      <input type="file" id="mediaInput" accept="image/*,video/*" style="border-radius: 8px; border: 2px solid #333; background-color: #121212; color: #eee; padding: 6px;" />
+      <button onclick="sendMessage()" style="min-width: 90px;">Kirim</button>
+    </div>
+  </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
@@ -38,48 +34,49 @@
       window.location.href = 'login.html';
     }
 
-    document.getElementById('welcome').innerText = "Hai, " + username;
+    document.getElementById('welcome').innerText = "Selamat datang, " + username;
 
     const socket = io();
+
     socket.emit('login', { username, password });
 
-    socket.on('userList', users => {
-      const userList = users.map(user => `<li>${user} 🔵</li>`).join('');
-      document.getElementById('onlineUsers').innerHTML = "<ul>" + userList + "</ul>";
+    socket.on('loginResult', res => {
+      if (!res.success) {
+        alert('Login gagal, silakan login ulang.');
+        localStorage.removeItem('username');
+        localStorage.removeItem('password');
+        window.location.href = 'login.html';
+      }
     });
 
     socket.on('message', data => {
-      const chatbox = document.getElementById('chatbox');
       const div = document.createElement('div');
-      div.className = 'message';
-
-      // Deteksi media berdasarkan path
-      if (data.text.startsWith('/uploads/')) {
-        const ext = data.text.split('.').pop().toLowerCase();
-        let mediaHTML = "";
-
-        if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
-          mediaHTML = `<img src="${data.text}" alt="media" class="chat-image"/>`;
-        } else if (['mp4', 'webm'].includes(ext)) {
-          mediaHTML = `<video controls class="chat-video"><source src="${data.text}" type="video/${ext}"></video>`;
-        } else {
-          mediaHTML = `<a href="${data.text}" target="_blank">Lihat File</a>`;
-        }
-
-        div.innerHTML = `<strong>${data.user}:</strong><br>${mediaHTML}`;
+      div.style.marginBottom = '10px';
+      if (data.text.startsWith('uploads/')) {
+        div.innerHTML = `<strong>${data.user}:</strong><br>
+          <a href="${data.text}" target="_blank" style="color:#64b5f6; text-decoration:none;">Lihat Media</a><br>
+          <img src="${data.text}" alt="media" style="max-width: 100%; max-height: 200px; margin-top:5px; border-radius: 6px;"/>`;
       } else {
         div.innerHTML = `<strong>${data.user}:</strong> ${data.text}`;
       }
-
-      chatbox.appendChild(div);
+      document.getElementById('chatbox').appendChild(div);
+      // Scroll ke bawah
+      const chatbox = document.getElementById('chatbox');
       chatbox.scrollTop = chatbox.scrollHeight;
     });
 
-    function sendMessage() {
-      const text = document.getElementById('msgInput').value.trim();
-      const file = document.getElementById('mediaInput').files[0];
+    socket.on('userList', users => {
+      const userList = users.map(user => `<li style="color:#2196f3; font-weight:600;">${user} 🔵</li>`).join('');
+      document.getElementById('onlineUsers').innerHTML = "<ul style='list-style:none; padding-left:0;'>" + userList + "</ul>";
+    });
 
-      if (file) {
+    function sendMessage() {
+      const textInput = document.getElementById('msgInput');
+      const mediaInput = document.getElementById('mediaInput');
+
+      if (mediaInput.files.length > 0) {
+        // Upload media dulu
+        const file = mediaInput.files[0];
         const formData = new FormData();
         formData.append("media", file);
 
@@ -87,20 +84,22 @@
           method: "POST",
           body: formData
         })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            socket.emit("message", { text: data.path });
-          }
-        });
-
-        document.getElementById('mediaInput').value = "";
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              socket.emit("message", { text: data.path });
+              mediaInput.value = '';
+              textInput.value = '';
+            } else {
+              alert("Gagal mengirim media.");
+            }
+          })
+          .catch(() => alert("Gagal mengirim media."));
+      } else if (textInput.value.trim() !== "") {
+        socket.emit('message', { text: textInput.value.trim() });
+        textInput.value = '';
       }
-
-      if (text) {
-        socket.emit('message', { text });
-        document.getElementById('msgInput').value = '';
-      }
+      textInput.focus();
     }
 
     function logout() {
