@@ -2,65 +2,80 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HaiChat</title>
   <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h2 id="welcome"></h2>
-      <button onclick="logout()">Logout</button>
-    </div>
+  <header>
+    <h2 id="welcome"></h2>
+    <button onclick="logout()" class="logout-btn">Logout</button>
+  </header>
 
-    <div class="online-users">
+  <main>
+    <section class="users">
       <h3>Pengguna Online:</h3>
       <div id="onlineUsers"></div>
-    </div>
+    </section>
 
-    <div id="chatbox" class="chatbox"></div>
+    <section class="chat">
+      <div id="chatbox" class="chatbox"></div>
 
-    <div class="chat-input">
-      <input id="msgInput" placeholder="Tulis pesan..." />
-      <input type="file" id="mediaInput" />
-      <button onclick="sendChat()">Kirim</button>
-    </div>
-  </div>
+      <div class="input-area">
+        <input id="msgInput" type="text" placeholder="Tulis pesan..." />
+        <input type="file" id="mediaInput" />
+        <button onclick="sendMessage()">Kirim</button>
+      </div>
+    </section>
+  </main>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const username = localStorage.getItem('username');
     const password = localStorage.getItem('password');
+
     if (!username || !password) {
       window.location.href = 'login.html';
     }
-    document.getElementById('welcome').innerText = "Selamat datang, " + username;
+
+    document.getElementById('welcome').innerText = "Hai, " + username;
 
     const socket = io();
     socket.emit('login', { username, password });
 
-    socket.on('message', displayMessage);
-    socket.on('messageHistory', messages => {
-      messages.forEach(displayMessage);
-    });
-
     socket.on('userList', users => {
-      const userList = users.map(user => `<li>${user} \u{1F7E2}</li>`).join('');
-      document.getElementById('onlineUsers').innerHTML = `<ul>${userList}</ul>`;
+      const userList = users.map(user => `<li>${user} 🔵</li>`).join('');
+      document.getElementById('onlineUsers').innerHTML = "<ul>" + userList + "</ul>";
     });
 
-    function displayMessage(data) {
+    socket.on('message', data => {
+      const chatbox = document.getElementById('chatbox');
       const div = document.createElement('div');
-      if (data.text.startsWith('uploads/')) {
-        div.innerHTML = `${data.user}: <a href="${data.text}" target="_blank">Lihat Media</a><br><img src="${data.text}" width="150" />`;
-      } else {
-        div.innerText = `${data.user}: ${data.text}`;
-      }
-      document.getElementById('chatbox').appendChild(div);
-      document.getElementById('chatbox').scrollTop = document.getElementById('chatbox').scrollHeight;
-    }
+      div.className = 'message';
 
-    function sendChat() {
+      // Deteksi media berdasarkan path
+      if (data.text.startsWith('/uploads/')) {
+        const ext = data.text.split('.').pop().toLowerCase();
+        let mediaHTML = "";
+
+        if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+          mediaHTML = `<img src="${data.text}" alt="media" class="chat-image"/>`;
+        } else if (['mp4', 'webm'].includes(ext)) {
+          mediaHTML = `<video controls class="chat-video"><source src="${data.text}" type="video/${ext}"></video>`;
+        } else {
+          mediaHTML = `<a href="${data.text}" target="_blank">Lihat File</a>`;
+        }
+
+        div.innerHTML = `<strong>${data.user}:</strong><br>${mediaHTML}`;
+      } else {
+        div.innerHTML = `<strong>${data.user}:</strong> ${data.text}`;
+      }
+
+      chatbox.appendChild(div);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    });
+
+    function sendMessage() {
       const text = document.getElementById('msgInput').value.trim();
       const file = document.getElementById('mediaInput').files[0];
 
@@ -78,7 +93,8 @@
             socket.emit("message", { text: data.path });
           }
         });
-        document.getElementById('mediaInput').value = '';
+
+        document.getElementById('mediaInput').value = "";
       }
 
       if (text) {
