@@ -1,18 +1,27 @@
 {
-  "name": "HaiChat",
+  "name": "haichat",
   "version": "1.0.0",
-  "description": "A simple real-time chat app with media upload and user authentication",
+  "description": "A modern chat app with media support and real-time messaging",
   "main": "app.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "start": "node app.js"
   },
-  "keywords": ["chat", "socket.io", "express", "nodejs", "realtime"],
+  "keywords": [
+    "chat",
+    "socket.io",
+    "express",
+    "media",
+    "real-time"
+  ],
   "author": "Azz",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.4",
+    "express": "^4.18.2",
+    "multer": "1.4.4-lts.1",
     "socket.io": "^4.7.2",
-    "uuid": "^9.0.1",
-    "multer": "^1.4.4"
+    "uuid": "^9.0.0"
   }
 }
