@@ -1,71 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HaiChat</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h2 id="welcome">Selamat datang</h2>
-    <button onclick="logout()">Logout</button>
+    <div class="header">
+      <h2 id="welcome"></h2>
+      <button onclick="logout()">Logout</button>
+    </div>
 
-    <div>
+    <div class="online-users">
       <h3>Pengguna Online:</h3>
       <div id="onlineUsers"></div>
     </div>
 
-    <div id="chatbox"></div>
+    <div id="chatbox" class="chatbox"></div>
 
-    <input id="msgInput" placeholder="Tulis pesan atau pilih media..." />
-    <input type="file" id="mediaInput" />
-    <button onclick="send()">Kirim</button>
+    <div class="chat-input">
+      <input id="msgInput" placeholder="Tulis pesan..." />
+      <input type="file" id="mediaInput" />
+      <button onclick="sendChat()">Kirim</button>
+    </div>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const username = localStorage.getItem('username');
     const password = localStorage.getItem('password');
-    if (!username || !password) window.location.href = 'login.html';
-
+    if (!username || !password) {
+      window.location.href = 'login.html';
+    }
     document.getElementById('welcome').innerText = "Selamat datang, " + username;
+
     const socket = io();
     socket.emit('login', { username, password });
 
-    socket.on('message', data => {
+    socket.on('message', displayMessage);
+    socket.on('messageHistory', messages => {
+      messages.forEach(displayMessage);
+    });
+
+    socket.on('userList', users => {
+      const userList = users.map(user => `<li>${user} \u{1F7E2}</li>`).join('');
+      document.getElementById('onlineUsers').innerHTML = `<ul>${userList}</ul>`;
+    });
+
+    function displayMessage(data) {
       const div = document.createElement('div');
       if (data.text.startsWith('uploads/')) {
-        div.innerHTML = `${data.user}: <a href='${data.text}' target='_blank'>Lihat Media</a><br><img src='${data.text}' width='150'/>`;
+        div.innerHTML = `${data.user}: <a href="${data.text}" target="_blank">Lihat Media</a><br><img src="${data.text}" width="150" />`;
       } else {
         div.innerText = `${data.user}: ${data.text}`;
       }
       document.getElementById('chatbox').appendChild(div);
       document.getElementById('chatbox').scrollTop = document.getElementById('chatbox').scrollHeight;
-    });
+    }
 
-    socket.on('userList', users => {
-      document.getElementById('onlineUsers').innerHTML =
-        "<ul>" + users.map(user => `<li>${user} 🔵</li>`).join('') + "</ul>";
-    });
-
-    function send() {
-      const text = document.getElementById('msgInput').value;
+    function sendChat() {
+      const text = document.getElementById('msgInput').value.trim();
       const file = document.getElementById('mediaInput').files[0];
 
       if (file) {
         const formData = new FormData();
         formData.append("media", file);
+
         fetch("/upload", {
           method: "POST",
           body: formData
         })
         .then(res => res.json())
         .then(data => {
-          if (data.success) socket.emit("message", { text: data.path });
+          if (data.success) {
+            socket.emit("message", { text: data.path });
+          }
         });
         document.getElementById('mediaInput').value = '';
       }
 
-      if (text.trim() !== "") {
+      if (text) {
         socket.emit('message', { text });
         document.getElementById('msgInput').value = '';
       }
