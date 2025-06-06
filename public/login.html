@@ -1,31 +1,36 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HaiChat - Login</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h2>Masuk ke HaiChat</h2>
-    <input id="username" type="text" placeholder="Username" required />
-    <input id="password" type="password" placeholder="Password" required />
+    <h2>Login</h2>
+    <input id="username" type="text" placeholder="Username" />
+    <input id="password" type="password" placeholder="Password" />
     <button id="loginBtn">Login</button>
     <p id="msg"></p>
     <p>Belum punya akun? <a href="signup.html">Daftar di sini</a></p>
   </div>
+
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
+
     document.getElementById('loginBtn').onclick = () => {
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value.trim();
-      localStorage.setItem('password', password);
-      if (username && password) {
-        socket.emit('login', { username, password });
+      if (!username || !password) {
+        document.getElementById('msg').innerText = 'Isi semua kolom.';
+        return;
       }
+      localStorage.setItem('password', password);
+      socket.emit('login', { username, password });
     };
+
     socket.on('loginResult', res => {
       if (res.success) {
         localStorage.setItem('username', res.user);
