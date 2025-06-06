@@ -6,20 +6,28 @@
 </head>
 <body>
   <h2>Signup</h2>
-  <input id="username" placeholder="Username" />
-  <input id="password" type="password" placeholder="Password" />
+  <input id="username" placeholder="Username" autocomplete="username" />
+  <input id="password" type="password" placeholder="Password" autocomplete="new-password" />
   <button id="signupBtn">Signup</button>
-  <p id="msg"></p>
+  <p id="msg" style="color:red;"></p>
   <p>Sudah punya akun? <a href="login.html">Login di sini</a></p>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
+
     document.getElementById('signupBtn').onclick = () => {
-      const username = document.getElementById('username').value;
+      const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
+
+      if (!username || !password) {
+        document.getElementById('msg').innerText = 'Username dan password harus diisi.';
+        return;
+      }
+
       socket.emit('signup', { username, password });
     };
+
     socket.on('signupResult', res => {
       if (res.success) {
         window.location.href = 'login.html';
