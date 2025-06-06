@@ -53,6 +53,9 @@ app.post('/upload', upload.single('media'), (req, res) => {
 io.on('connection', socket => {
   let currentUser = null;
 
+  // Kirim history pesan ke client baru langsung saat connect
+  socket.emit('messageHistory', messages);
+
   socket.on('signup', data => {
     const users = loadUsers();
     if (users[data.username]) {
@@ -70,14 +73,23 @@ io.on('connection', socket => {
       currentUser = data.username;
       onlineUsers[currentUser] = true;
       socket.emit('loginResult', { success: true, user: currentUser });
+
+      // Kirim daftar user online ke semua client
       io.emit('userList', Object.keys(onlineUsers));
+
+      // Kirim ulang history pesan setelah login
+      socket.emit('messageHistory', messages);
     } else {
       socket.emit('loginResult', { success: false, message: 'Username atau password salah' });
     }
   });
 
   socket.on('message', data => {
-    if (!currentUser) return;
+    if (!currentUser) {
+      // User belum login, tolak pengiriman pesan
+      socket.emit('errorMessage', { message: 'Anda harus login untuk mengirim pesan' });
+      return;
+    }
     const messageData = {
       id: uuidv4(),
       user: currentUser,
@@ -85,6 +97,8 @@ io.on('connection', socket => {
       time: Date.now()
     };
     messages.push(messageData);
+
+    // Kirim pesan ke semua client (termasuk yang belum login)
     io.emit('message', messageData);
   });
 
@@ -92,6 +106,7 @@ io.on('connection', socket => {
     if (currentUser) {
       delete onlineUsers[currentUser];
       io.emit('userList', Object.keys(onlineUsers));
+      currentUser = null;
     }
   });
 
