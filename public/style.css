@@ -1,0 +1,94 @@
+/* Warna dasar */
+:root {
+  --primary: #4e89ff;
+  --secondary: #eef1f7;
+  --accent: #ffffff;
+  --text: #1e1e1e;
+  --online: #4caf50;
+  --background: #f7f9fc;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+}
+
+h2, h3 {
+  margin: 10px;
+  color: var(--primary);
+}
+
+#welcome {
+  margin: 15px;
+}
+
+button {
+  background-color: var(--primary);
+  color: var(--accent);
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 5px;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+button:hover {
+  background-color: #3d6fdd;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="file"] {
+  padding: 8px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: calc(100% - 20px);
+  box-sizing: border-box;
+}
+
+#chatbox {
+  height: 300px;
+  overflow-y: auto;
+  background-color: var(--secondary);
+  padding: 10px;
+  border-radius: 8px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+}
+
+#chatbox div {
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+#onlineUsers ul {
+  list-style: none;
+  padding: 0;
+}
+#onlineUsers li {
+  padding: 5px 10px;
+  margin-bottom: 4px;
+  background-color: #e0f7e9;
+  border-left: 5px solid var(--online);
+  border-radius: 4px;
+}
+
+img {
+  max-width: 150px;
+  border-radius: 4px;
+  margin-top: 5px;
+  display: block;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+}
