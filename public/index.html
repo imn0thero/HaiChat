@@ -1,28 +1,24 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HaiChat - Chat</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
+  <title>HaiChat</title>
 </head>
 <body>
-  <div class="container">
-    <h2 id="welcome">Selamat datang</h2>
-    <button onclick="logout()">Logout</button>
+  <h2 id="welcome"></h2>
+  <button id="logoutBtn">Logout</button>
 
-    <section style="margin: 20px 0;">
-      <h3>Pengguna Online:</h3>
-      <div id="onlineUsers" style="min-height: 50px;"></div>
-    </section>
+  <div>
+    <h3>Pengguna Online:</h3>
+    <div id="onlineUsers"></div>
+  </div>
 
-    <div id="chatbox" style="height: 300px; overflow-y: auto; border: 1px solid #333; border-radius: 8px; padding: 10px; background-color: #222; color: #eee; user-select: text;"></div>
+  <div id="chatbox"></div>
 
-    <div style="margin-top: 15px; display: flex; gap: 10px;">
-      <input id="msgInput" placeholder="Tulis pesan..." autocomplete="off" style="flex: 1; padding: 12px; border-radius: 8px; border: 2px solid #333; background-color: #121212; color: #eee; caret-color: #2196f3; font-size: 1rem;" />
-      <input type="file" id="mediaInput" accept="image/*,video/*" style="border-radius: 8px; border: 2px solid #333; background-color: #121212; color: #eee; padding: 6px;" />
-      <button onclick="sendMessage()" style="min-width: 90px;">Kirim</button>
-    </div>
+  <div id="inputArea">
+    <input id="msgInput" placeholder="Tulis pesan..." autocomplete="off" />
+    <input type="file" id="mediaInput" />
+    <button id="sendBtn">Kirim</button>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
@@ -34,7 +30,7 @@
       window.location.href = 'login.html';
     }
 
-    document.getElementById('welcome').innerText = "Selamat datang, " + username;
+    document.getElementById('welcome').innerText = "Hai, " + username;
 
     const socket = io();
 
@@ -42,72 +38,90 @@
 
     socket.on('loginResult', res => {
       if (!res.success) {
-        alert('Login gagal, silakan login ulang.');
+        alert('Login gagal, silakan login ulang');
         localStorage.removeItem('username');
         localStorage.removeItem('password');
         window.location.href = 'login.html';
       }
     });
 
+    socket.on('loadMessages', data => {
+      data.forEach(message => showMessage(message));
+      scrollToBottom();
+    });
+
     socket.on('message', data => {
-      const div = document.createElement('div');
-      div.style.marginBottom = '10px';
-      if (data.text.startsWith('uploads/')) {
-        div.innerHTML = `<strong>${data.user}:</strong><br>
-          <a href="${data.text}" target="_blank" style="color:#64b5f6; text-decoration:none;">Lihat Media</a><br>
-          <img src="${data.text}" alt="media" style="max-width: 100%; max-height: 200px; margin-top:5px; border-radius: 6px;"/>`;
-      } else {
-        div.innerHTML = `<strong>${data.user}:</strong> ${data.text}`;
-      }
-      document.getElementById('chatbox').appendChild(div);
-      // Scroll ke bawah
-      const chatbox = document.getElementById('chatbox');
-      chatbox.scrollTop = chatbox.scrollHeight;
+      showMessage(data);
+      scrollToBottom();
     });
 
     socket.on('userList', users => {
-      const userList = users.map(user => `<li style="color:#2196f3; font-weight:600;">${user} 🔵</li>`).join('');
-      document.getElementById('onlineUsers').innerHTML = "<ul style='list-style:none; padding-left:0;'>" + userList + "</ul>";
+      const userList = users.map(user => `<li>${user} 🔵</li>`).join('');
+      document.getElementById('onlineUsers').innerHTML = "<ul>" + userList + "</ul>";
     });
 
-    function sendMessage() {
+    function showMessage(data) {
+      const chatbox = document.getElementById('chatbox');
+      const div = document.createElement('div');
+      div.classList.add('message');
+      if (data.user === username) {
+        div.classList.add('message-right');
+      } else {
+        div.classList.add('message-left');
+      }
+
+      if (data.text.startsWith('uploads/')) {
+        div.innerHTML = `<strong>${data.user}</strong><br>
+          <img src="${data.text}" alt="media" style="max-width:100%; max-height:200px; border-radius:6px;" />`;
+      } else {
+        div.innerHTML = `<strong>${data.user}</strong><br>${escapeHtml(data.text)}`;
+      }
+      chatbox.appendChild(div);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.innerText = text;
+      return div.innerHTML;
+    }
+
+    function scrollToBottom() {
+      const chatbox = document.getElementById('chatbox');
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    document.getElementById('sendBtn').onclick = () => {
       const textInput = document.getElementById('msgInput');
       const mediaInput = document.getElementById('mediaInput');
 
       if (mediaInput.files.length > 0) {
-        // Upload media dulu
+        // Upload media
         const file = mediaInput.files[0];
         const formData = new FormData();
-        formData.append("media", file);
+        formData.append('media', file);
 
-        fetch("/upload", {
-          method: "POST",
-          body: formData
-        })
+        fetch('/upload', { method: 'POST', body: formData })
           .then(res => res.json())
           .then(data => {
             if (data.success) {
-              socket.emit("message", { text: data.path });
+              socket.emit('message', { text: data.path });
               mediaInput.value = '';
-              textInput.value = '';
             } else {
-              alert("Gagal mengirim media.");
+              alert('Gagal mengirim media');
             }
-          })
-          .catch(() => alert("Gagal mengirim media."));
-      } else if (textInput.value.trim() !== "") {
+          });
+      } else if (textInput.value.trim() !== '') {
         socket.emit('message', { text: textInput.value.trim() });
         textInput.value = '';
       }
-      textInput.focus();
-    }
+    };
 
-    function logout() {
+    document.getElementById('logoutBtn').onclick = () => {
+      socket.emit('logout');
       localStorage.removeItem('username');
       localStorage.removeItem('password');
-      socket.emit('logout');
       window.location.href = 'login.html';
-    }
+    };
   </script>
 </body>
 </html>
