@@ -1,4 +1,4 @@
-// app.js (versi diperbaiki dan ditingkatkan)
+// app.js
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
@@ -14,16 +14,13 @@ const UPLOAD_DIR = path.join(__dirname, 'public/uploads');
 
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json());
-
-// Setup multer
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: function (req, file, cb) {
     cb(null, UPLOAD_DIR);
   },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, uuidv4() + ext);
+  filename: function (req, file, cb) {
+    const uniqueName = uuidv4() + path.extname(file.originalname);
+    cb(null, uniqueName);
   }
 });
 const upload = multer({ storage });
@@ -83,8 +80,9 @@ io.on('connection', socket => {
       currentUser = data.username;
       onlineUsers[currentUser] = true;
       socket.emit('loginResult', { success: true, user: currentUser });
-      socket.emit('chatHistory', messages);
       io.emit('userList', Object.keys(onlineUsers));
+      // Kirim pesan lama setelah login
+      socket.emit('messageHistory', messages);
     } else {
       socket.emit('loginResult', { success: false, message: 'Username atau password salah' });
     }
