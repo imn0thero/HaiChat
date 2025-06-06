@@ -11,35 +11,25 @@ const PORT = process.env.PORT || 3000;
 const USERS_FILE = path.join(__dirname, 'users.json');
 const UPLOAD_DIR = path.join(__dirname, 'public/uploads');
 
-// Middleware
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(UPLOAD_DIR)); // <== Tambahkan ini agar media bisa diakses
+const upload = multer({ dest: UPLOAD_DIR });
 
-const upload = multer({
-  dest: UPLOAD_DIR,
-  fileFilter: (req, file, cb) => cb(null, true)
-});
-
-// Inisialisasi users.json jika belum ada
 if (!fs.existsSync(USERS_FILE)) {
   fs.writeFileSync(USERS_FILE, JSON.stringify({}));
 }
-
-// Buat folder uploads jika belum ada
 if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
 let onlineUsers = {};
-let messages = []; // Semua pesan disimpan di memori
+let messages = [];
 
-// Hapus pesan lebih dari 24 jam setiap menit
+// Hapus pesan lebih dari 24 jam tiap menit
 setInterval(() => {
   const now = Date.now();
   messages = messages.filter(m => now - m.time < 24 * 60 * 60 * 1000);
 }, 60 * 1000);
 
-// Helper untuk user
 function loadUsers() {
   return JSON.parse(fs.readFileSync(USERS_FILE));
 }
@@ -47,19 +37,22 @@ function saveUsers(users) {
   fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
-// Endpoint upload file
 app.post('/upload', upload.single('media'), (req, res) => {
   if (!req.file) return res.status(400).json({ success: false });
-  const filePath = '/uploads/' + req.file.filename;
+  // Simpan file dengan ekstensi asli
+  const ext = path.extname(req.file.originalname);
+  const newFilename = req.file.filename + ext;
+  const newPath = path.join(UPLOAD_DIR, newFilename);
+  fs.renameSync(req.file.path, newPath);
+  const filePath = 'uploads/' + newFilename;
   res.json({ success: true, path: filePath });
 });
 
-// Socket.IO
 io.on('connection', socket => {
   let currentUser = null;
 
-  // Kirim semua pesan sebelumnya
-  messages.forEach(m => socket.emit('message', m));
+  // Kirim pesan lama saat client connect
+  socket.emit('loadMessages', messages);
 
   socket.on('signup', data => {
     const users = loadUsers();
@@ -85,15 +78,13 @@ io.on('connection', socket => {
   });
 
   socket.on('message', data => {
-    const sender = currentUser || "Pengunjung"; // Bisa juga untuk tamu
-
+    if (!currentUser) return;
     const messageData = {
       id: uuidv4(),
-      user: sender,
+      user: currentUser,
       text: data.text,
       time: Date.now()
     };
-
     messages.push(messageData);
     io.emit('message', messageData);
   });
@@ -114,5 +105,5 @@ io.on('connection', socket => {
 });
 
 http.listen(PORT, () => {
-  console.log(`Server berjalan di http://localhost:${PORT}`);
+  console.log(`Server berjalan di port ${PORT}`);
 });
