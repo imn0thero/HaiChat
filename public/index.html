@@ -13,14 +13,11 @@
     <div id="onlineUsers"></div>
   </div>
 
-  <div id="chatbox" style="height:300px; overflow:auto; border:1px solid #ccc;"></div>
+  <div id="chatbox" style="height:300px; overflow:auto; border:1px solid #ccc; padding: 5px;"></div>
 
   <input id="msgInput" placeholder="Tulis pesan..." />
-  <button onclick="sendMessage()">Kirim</button>
-
-  <br><br>
   <input type="file" id="mediaInput" />
-  <button onclick="uploadMedia()">Kirim Media</button>
+  <button onclick="send()">Kirim</button>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
@@ -34,16 +31,32 @@
     document.getElementById('welcome').innerText = "Selamat datang, " + username;
 
     const socket = io();
+
     socket.emit('login', { username, password });
 
-    socket.on('message', data => {
+    function addMessage(data) {
       const div = document.createElement('div');
       if (data.text.startsWith('uploads/')) {
-        div.innerHTML = data.user + ": <a href='" + data.text + "' target='_blank'>Lihat Media</a><br><img src='" + data.text + "' width='150'/>";
+        div.innerHTML = `
+          <strong>${data.user}</strong>: 
+          <a href="${data.text}" target="_blank">Lihat Media</a><br>
+          <img src="${data.text}" width="150" style="margin-top: 5px;"/>
+        `;
       } else {
-        div.innerText = data.user + ": " + data.text;
+        div.textContent = `${data.user}: ${data.text}`;
       }
       document.getElementById('chatbox').appendChild(div);
+      document.getElementById('chatbox').scrollTop = document.getElementById('chatbox').scrollHeight;
+    }
+
+    socket.on('messageHistory', history => {
+      const chatbox = document.getElementById('chatbox');
+      chatbox.innerHTML = '';
+      history.forEach(addMessage);
+    });
+
+    socket.on('message', data => {
+      addMessage(data);
     });
 
     socket.on('userList', users => {
@@ -51,27 +64,39 @@
       document.getElementById('onlineUsers').innerHTML = "<ul>" + userList + "</ul>";
     });
 
-    function sendMessage() {
-      const text = document.getElementById('msgInput').value;
-      socket.emit('message', { text });
-      document.getElementById('msgInput').value = '';
-    }
+    function send() {
+      const fileInput = document.getElementById('mediaInput');
+      const textInput = document.getElementById('msgInput');
+      const file = fileInput.files[0];
+      const text = textInput.value.trim();
 
-    function uploadMedia() {
-      const file = document.getElementById('mediaInput').files[0];
-      if (!file) return;
-      const formData = new FormData();
-      formData.append("media", file);
+      if (file) {
+        // Upload media dulu
+        const formData = new FormData();
+        formData.append("media", file);
 
-      fetch("/upload", {
-        method: "POST",
-        body: formData
-      }).then(res => res.json())
+        fetch("/upload", {
+          method: "POST",
+          body: formData
+        })
+        .then(res => res.json())
         .then(data => {
           if (data.success) {
             socket.emit("message", { text: data.path });
+            fileInput.value = '';
+            textInput.value = '';
+          } else {
+            alert('Upload gagal');
           }
-        });
+        })
+        .catch(() => alert('Upload gagal'));
+      } else if (text) {
+        // Kirim pesan teks biasa
+        socket.emit('message', { text });
+        textInput.value = '';
+      } else {
+        alert('Masukkan pesan teks atau pilih file media');
+      }
     }
 
     function logout() {
