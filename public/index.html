@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="style.css" />
-  <title>HaiChat - Chat</title>
+  <title>HaiChat</title>
 </head>
 <body>
   <div class="container">
     <h2 id="welcome"></h2>
-    <button id="logoutBtn">Logout</button>
+    <button onclick="logout()">Logout</button>
 
     <div>
       <h3>Pengguna Online:</h3>
@@ -19,16 +19,14 @@
     <div id="chatbox"></div>
 
     <div id="inputArea">
-      <input id="msgInput" type="text" placeholder="Tulis pesan..." autocomplete="off" />
-      <input id="mediaInput" type="file" accept="image/*,video/*" />
-      <button id="sendBtn">Kirim</button>
+      <input id="msgInput" placeholder="Tulis pesan..." />
+      <input type="file" id="mediaInput" />
+      <button onclick="sendMessage()">Kirim</button>
     </div>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    const socket = io();
-
     const username = localStorage.getItem('username');
     const password = localStorage.getItem('password');
 
@@ -36,98 +34,70 @@
       window.location.href = 'login.html';
     }
 
-    document.getElementById('welcome').innerText = `Selamat datang, ${username}`;
+    document.getElementById('welcome').innerText = "Selamat datang, " + username;
 
-    // Login on connect and receive all messages history
+    const socket = io();
     socket.emit('login', { username, password });
 
-    socket.on('loginResult', res => {
-      if (!res.success) {
-        alert(res.message);
-        localStorage.removeItem('username');
-        localStorage.removeItem('password');
-        window.location.href = 'login.html';
-      } else {
-        // Show existing messages
-        res.messages.forEach(showMessage);
-      }
-    });
-
     socket.on('message', data => {
-      showMessage(data);
-    });
-
-    socket.on('userList', users => {
-      const userList = users.map(user => `<li>${user} 🔵</li>`).join('');
-      document.getElementById('onlineUsers').innerHTML = `<ul>${userList}</ul>`;
-    });
-
-    function showMessage(data) {
       const div = document.createElement('div');
       div.classList.add('message');
+
       if (data.user === username) {
         div.classList.add('message-right');
       } else {
         div.classList.add('message-left');
       }
 
-      if (data.text.match(/\.(jpeg|jpg|png|gif|webp)$/i)) {
-        div.innerHTML = `<b>${data.user}</b>:<br><img src="${data.text}" alt="media" />`;
-      } else if (data.text.match(/\.(mp4|webm|ogg)$/i)) {
-        div.innerHTML = `<b>${data.user}</b>:<br><video controls width="200"><source src="${data.text}" type="video/mp4">Browser tidak mendukung video.</video>`;
-      } else if (data.text.startsWith('uploads/')) {
-        // If unknown media type, just link
-        div.innerHTML = `<b>${data.user}</b>: <a href="${data.text}" target="_blank">Lihat Media</a>`;
+      if (data.text.startsWith('uploads/')) {
+        div.innerHTML = `<strong>${data.user}:</strong><br>
+          <img src="${data.text}" width="150" style="margin-top: 5px; border-radius: 6px;" />`;
       } else {
-        div.innerText = `${data.user}: ${data.text}`;
+        div.innerHTML = `<strong>${data.user}:</strong><br>${data.text}`;
       }
 
       document.getElementById('chatbox').appendChild(div);
-      // Auto scroll ke bawah
       document.getElementById('chatbox').scrollTop = document.getElementById('chatbox').scrollHeight;
-    }
+    });
 
-    // Kirim teks atau media
-    async function sendMessage() {
-      const msgInput = document.getElementById('msgInput');
-      const mediaInput = document.getElementById('mediaInput');
-      const text = msgInput.value.trim();
+    socket.on('userList', users => {
+      const userList = users.map(user => `<li>${user} 🔵</li>`).join('');
+      document.getElementById('onlineUsers').innerHTML = "<ul>" + userList + "</ul>";
+    });
 
-      if (mediaInput.files.length > 0) {
-        // Upload media terlebih dahulu
-        const file = mediaInput.files[0];
+    function sendMessage() {
+      const text = document.getElementById('msgInput').value.trim();
+      const file = document.getElementById('mediaInput').files[0];
+
+      if (file) {
         const formData = new FormData();
-        formData.append('media', file);
+        formData.append("media", file);
 
-        try {
-          const res = await fetch('/upload', { method: 'POST', body: formData });
-          const data = await res.json();
-          if (data.success) {
-            socket.emit('message', { text: data.path });
-            mediaInput.value = '';
-          } else {
-            alert('Gagal mengirim media');
-          }
-        } catch (err) {
-          alert('Error saat mengirim media');
-        }
+        fetch("/upload", {
+          method: "POST",
+          body: formData
+        }).then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              socket.emit("message", { text: data.path });
+            }
+          });
+
+        document.getElementById('mediaInput').value = '';
       }
 
       if (text) {
         socket.emit('message', { text });
-        msgInput.value = '';
+        document.getElementById('msgInput').value = '';
       }
     }
 
-    document.getElementById('sendBtn').onclick = sendMessage;
-
-    // Logout
-    document.getElementById('logoutBtn').onclick = () => {
+    function logout() {
       localStorage.removeItem('username');
       localStorage.removeItem('password');
       socket.emit('logout');
       window.location.href = 'login.html';
-    };
+    }
   </script>
 </body>
 </html>
