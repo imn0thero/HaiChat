@@ -1,61 +1,58 @@
 /* Reset */
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
+/* Body */
 body {
   background-color: #000;
   color: #2196f3;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 0;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  animation: fadeIn 1s ease;
+  animation: fadeIn 0.8s ease-in;
+  padding: 20px;
 }
 
 /* Container untuk login/signup */
 .container {
-  background: #0f0f0f;
-  padding: 30px 40px;
+  background: #121212;
+  padding: 25px 30px;
   border-radius: 12px;
-  box-shadow: 0 0 12px #2196f355;
-  width: 90%;
-  max-width: 420px;
+  box-shadow: 0 0 20px rgba(33, 150, 243, 0.3);
+  width: 100%;
+  max-width: 400px;
   animation: slideDown 0.5s ease;
-  text-align: center;
 }
 
 h2 {
+  text-align: center;
   color: #2196f3;
   margin-bottom: 20px;
 }
 
 input[type="text"],
 input[type="password"],
-input[type="file"] {
+input[type="file"],
+input[type="username"] {
   width: 100%;
   padding: 12px 10px;
   margin-bottom: 15px;
   border: none;
   border-radius: 8px;
-  background: #1a1a1a;
-  color: #e0e0e0;
+  background: #1f1f1f;
+  color: #2196f3;
   font-size: 16px;
-  transition: background-color 0.3s;
+  transition: 0.3s ease;
 }
 
-input[type="text"]:focus,
-input[type="password"]:focus {
-  background: #222;
+input:focus {
+  background: #2a2a2a;
   outline: none;
-}
-
-input[type="file"] {
-  color: #bbb;
-  padding: 6px 10px;
 }
 
 button {
@@ -67,33 +64,111 @@ button {
   color: white;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s;
-  margin-top: 10px;
+  transition: 0.3s;
 }
 
 button:hover {
   background-color: #1976d2;
 }
 
-.msg {
-  margin-top: 12px;
-  font-weight: 600;
-  color: #4fc3f7;
+p {
+  margin-top: 10px;
+  text-align: center;
 }
 
-/* Link Daftar/Login */
 a {
-  color: #4fc3f7;
+  color: #64b5f6;
   text-decoration: none;
 }
+
 a:hover {
   text-decoration: underline;
 }
 
-/* Animasi */
+/* Chat Page */
+#chatbox {
+  height: 300px;
+  overflow-y: auto;
+  border: 1px solid #2196f3;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #0d0d0d;
+  margin-bottom: 12px;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.message {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 16px;
+  animation: fadeIn 0.3s ease;
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+
+.message-left {
+  background-color: #1e1e1e;
+  color: #90caf9;
+  align-self: flex-start;
+  border-bottom-left-radius: 0;
+}
+
+.message-right {
+  background-color: #2196f3;
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 0;
+  text-align: right;
+}
+
+#inputArea {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+#msgInput {
+  flex: 1;
+  border-radius: 8px;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  background: #1f1f1f;
+  color: #2196f3;
+}
+
+#msgInput:focus {
+  outline: none;
+  background: #2a2a2a;
+}
+
+#mediaInput {
+  color: #eee;
+}
+
+#onlineUsers ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+#onlineUsers li {
+  padding: 4px 8px;
+  border-bottom: 1px solid #2a2a2a;
+  color: #90caf9;
+  font-weight: 500;
+}
+
+/* Animations */
 @keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity: 1;}
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideDown {
@@ -110,7 +185,10 @@ a:hover {
 /* Responsive */
 @media (max-width: 500px) {
   .container {
-    width: 95%;
-    padding: 20px 25px;
+    width: 100%;
+    padding: 20px;
+  }
+  #chatbox {
+    height: 200px;
   }
 }
