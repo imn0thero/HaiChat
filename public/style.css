@@ -9,7 +9,7 @@
 body {
   background-color: #ffffff;
   color: #000000;
-  font-family: 'Moirai One', system-ui;
+  font-family: 'Londrina Shadow', cursive;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -45,7 +45,7 @@ input[type="file"] {
   background: #ffffff;
   color: #000000;
   font-size: 20px;
-  font-family: 'Moirai One', system-ui;
+  font-family: 'Londrina Shadow', cursive;
 }
 
 input:focus {
@@ -62,7 +62,7 @@ button {
   background-color: transparent;
   color: #000000;
   font-size: 20px;
-  font-family: 'Moirai One', system-ui;
+  font-family: 'Londrina Shadow', cursive;
   cursor: pointer;
 }
 
@@ -94,6 +94,7 @@ button:hover {
   word-wrap: break-word;
   line-height: 1.4;
   background: #ffffff;
+  font-family: 'Londrina Shadow', cursive;
 }
 
 .message-left {
@@ -121,7 +122,7 @@ button:hover {
   border: 2px solid #000000;
   padding: 10px;
   font-size: 20px;
-  font-family: 'Moirai One', system-ui;
+  font-family: 'Londrina Shadow', cursive;
 }
 
 #msgInput:focus {
@@ -140,6 +141,7 @@ button:hover {
 #onlineUsers li {
   padding: 4px 8px;
   border-bottom: 1px solid #000000;
+  font-family: 'Londrina Shadow', cursive;
 }
 
 /* Link */
