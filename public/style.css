@@ -7,8 +7,8 @@
 
 /* Body */
 body {
-  background-color: black;
-  color: #2196f3;
+  background-color: #ffffff;
+  color: #111111;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   min-height: 100vh;
   display: flex;
@@ -18,12 +18,13 @@ body {
   padding: 20px;
 }
 
-/* Container untuk login/signup */
+/* Container */
 .container {
-  background: #121212;
+  background: #ffffff;
   padding: 25px 30px;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(33, 150, 243, 0.3);
+  border-radius: 0;
+  border: 1px solid #ccc;
+  box-shadow: none;
   width: 100%;
   max-width: 400px;
   animation: slideDown 0.5s ease;
@@ -31,53 +32,61 @@ body {
 
 h2 {
   text-align: center;
-  color: #2196f3;
+  color: #111111;
   margin-bottom: 20px;
+  font-weight: normal;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
 }
 
+/* Input Fields */
 input[type="text"],
 input[type="password"],
 input[type="file"],
 input[type="username"] {
   width: 100%;
-  padding: 12px 10px;
+  padding: 10px;
   margin-bottom: 15px;
-  border: none;
-  border-radius: 8px;
-  background: #1f1f1f;
-  color: #2196f3;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  color: #111;
   font-size: 16px;
-  transition: 0.3s ease;
+  border-radius: 0;
+  transition: 0.2s;
 }
 
 input:focus {
-  background: #2a2a2a;
+  background: #ffffff;
+  border-color: #000;
   outline: none;
 }
 
+/* Buttons */
 button {
   width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  background-color: #2196f3;
-  color: white;
+  padding: 10px;
+  border: 1px solid #111;
+  background-color: transparent;
+  color: #111;
   font-size: 16px;
   cursor: pointer;
   transition: 0.3s;
+  border-radius: 0;
 }
 
 button:hover {
-  background-color: #1976d2;
+  background-color: #111;
+  color: #fff;
 }
 
+/* Links and Paragraph */
 p {
   margin-top: 10px;
   text-align: center;
 }
 
 a {
-  color: #64b5f6;
+  color: #111;
   text-decoration: none;
 }
 
@@ -85,14 +94,13 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Chat Page */
+/* Chat Box */
 #chatbox {
   height: 300px;
   overflow-y: auto;
-  border: 1px solid #2196f3;
-  border-radius: 8px;
+  border: 1px solid #ccc;
   padding: 10px;
-  background-color: #0d0d0d;
+  background-color: #fff;
   margin-bottom: 12px;
   font-size: 14px;
   display: flex;
@@ -100,30 +108,28 @@ a:hover {
   gap: 10px;
 }
 
+/* Messages */
 .message {
   max-width: 70%;
   padding: 10px 15px;
-  border-radius: 16px;
-  animation: fadeIn 0.3s ease;
+  border: 1px solid #000;
+  background-color: #fff;
+  color: #111;
   word-wrap: break-word;
   line-height: 1.4;
+  border-radius: 0;
 }
 
 .message-left {
-  background-color: #1e1e1e;
-  color: #90caf9;
   align-self: flex-start;
-  border-bottom-left-radius: 0;
 }
 
 .message-right {
-  background-color: #2196f3;
-  color: white;
   align-self: flex-end;
-  border-bottom-right-radius: 0;
   text-align: right;
 }
 
+/* Input Area */
 #inputArea {
   display: flex;
   flex-wrap: wrap;
@@ -133,35 +139,35 @@ a:hover {
 
 #msgInput {
   flex: 1;
-  border-radius: 8px;
-  border: none;
+  border: 1px solid #ccc;
   padding: 10px;
   font-size: 16px;
-  background: #1f1f1f;
-  color: #2196f3;
+  background: #f9f9f9;
+  color: #111;
+  border-radius: 0;
 }
 
 #msgInput:focus {
   outline: none;
-  background: #2a2a2a;
+  background: #fff;
+  border-color: #000;
 }
 
-#mediaInput {
-  color: #eee;
-}
-
+/* Online Users */
 #onlineUsers ul {
   list-style: none;
   padding: 0;
   margin: 0;
   max-height: 100px;
   overflow-y: auto;
+  border-top: 1px solid #ccc;
+  margin-top: 10px;
 }
 
 #onlineUsers li {
-  padding: 4px 8px;
-  border-bottom: 1px solid #2a2a2a;
-  color: #90caf9;
+  padding: 6px 8px;
+  border-bottom: 1px solid #eee;
+  color: #333;
   font-weight: 500;
 }
 
