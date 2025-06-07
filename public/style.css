@@ -18,10 +18,10 @@ body {
   justify-content: center;
   align-items: center;
   padding: 20px;
+  scroll-behavior: smooth;
   transition: background-color 0.3s, color 0.3s;
 }
 
-/* Dark mode */
 body.dark-mode {
   background-color: #121212;
   color: #ffffff;
@@ -41,6 +41,12 @@ body.dark-mode {
   transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 
+body.dark-mode .container {
+  background: #1e1e1e;
+  border-color: #ffffff;
+  box-shadow: 4px 4px 0 #ffffff;
+}
+
 /* Sobekan kertas kiri */
 .container::before {
   content: "";
@@ -58,13 +64,6 @@ body.dark-mode {
   z-index: 1;
 }
 
-/* Dark mode container */
-body.dark-mode .container {
-  background: #1e1e1e;
-  border-color: #ffffff;
-  box-shadow: 4px 4px 0 #ffffff;
-}
-
 body.dark-mode .container::before {
   background: repeating-linear-gradient(
     #1e1e1e,
@@ -72,6 +71,35 @@ body.dark-mode .container::before {
     #ffffff 6px,
     #ffffff 7px
   );
+}
+
+/* Toggle Button (Dark Mode) */
+.toggle-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-family: 'Nova Round', cursive;
+  font-size: 16px;
+  background: transparent;
+  border: 2px dashed #000;
+  border-radius: 10px;
+  padding: 6px 10px;
+  color: #000;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.toggle-btn:hover {
+  background-color: #f0f0f0;
+}
+
+body.dark-mode .toggle-btn {
+  color: #fff;
+  border-color: #fff;
+}
+
+body.dark-mode .toggle-btn:hover {
+  background-color: #333;
 }
 
 /* Heading */
@@ -92,6 +120,10 @@ h2, h3 {
 #onlineUsers li {
   padding: 4px 8px;
   border-bottom: 1px solid #000;
+}
+
+body.dark-mode #onlineUsers li {
+  border-bottom-color: #fff;
 }
 
 /* Chatbox */
@@ -125,6 +157,7 @@ body.dark-mode #chatbox {
   line-height: 1.4;
   background: #fff;
   box-shadow: 2px 2px 0 #000;
+  transition: 0.3s;
 }
 
 body.dark-mode .message {
@@ -206,25 +239,6 @@ body.dark-mode button {
 
 body.dark-mode button:hover {
   background-color: #333;
-}
-
-/* Dark Mode Toggle */
-.toggle-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-family: 'Nova Round', cursive;
-  font-size: 14px;
-  background: transparent;
-  border: 1px dashed #000;
-  padding: 6px 10px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-body.dark-mode .toggle-btn {
-  border-color: #fff;
-  color: #fff;
 }
 
 /* Responsive */
