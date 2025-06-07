@@ -41,7 +41,7 @@ input[type="file"] {
   padding: 10px;
   margin-bottom: 15px;
   border: 2px solid #000000;
-  border-radius: 8px;
+  border-radius: 16px;
   background: #ffffff;
   color: #000000;
   font-size: 20px;
@@ -58,7 +58,7 @@ button {
   width: 100%;
   padding: 10px;
   border: 2px solid #000000;
-  border-radius: 8px;
+  border-radius: 16px;
   background-color: transparent;
   color: #000000;
   font-size: 20px;
@@ -75,7 +75,7 @@ button:hover {
   height: 300px;
   overflow-y: auto;
   border: 2px solid #000000;
-  border-radius: 8px;
+  border-radius: 16px;
   padding: 10px;
   background-color: #ffffff;
   margin-bottom: 12px;
@@ -117,7 +117,7 @@ button:hover {
 
 #msgInput {
   flex: 1;
-  border-radius: 8px;
+  border-radius: 16px;
   border: 2px solid #000000;
   padding: 10px;
   font-size: 20px;
