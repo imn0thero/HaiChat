@@ -44,13 +44,13 @@ input[type="file"] {
   border-radius: 8px;
   background: #ffffff;
   color: #000000;
-  font-size: 16px;
+  font-size: 20px;
   font-family: 'Moirai One', system-ui;
 }
 
 input:focus {
   outline: none;
-  background: #000000;
+  background: #f5f5f5;
 }
 
 /* Tombol */
@@ -61,7 +61,7 @@ button {
   border-radius: 8px;
   background-color: transparent;
   color: #000000;
-  font-size: 16px;
+  font-size: 20px;
   font-family: 'Moirai One', system-ui;
   cursor: pointer;
 }
@@ -79,7 +79,7 @@ button:hover {
   padding: 10px;
   background-color: #ffffff;
   margin-bottom: 12px;
-  font-size: 14px;
+  font-size: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -120,13 +120,13 @@ button:hover {
   border-radius: 8px;
   border: 2px solid #000000;
   padding: 10px;
-  font-size: 16px;
+  font-size: 20px;
   font-family: 'Moirai One', system-ui;
 }
 
 #msgInput:focus {
   outline: none;
-  background: #000000;
+  background: #f5f5f5;
 }
 
 #onlineUsers ul {
