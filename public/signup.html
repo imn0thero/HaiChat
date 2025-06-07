@@ -9,9 +9,9 @@
 <body>
   <div class="container">
     <h2>Signup</h2>
-    <input id="username" type="username" placeholder="Username" autocomplete="off" />
+    <input id="username" type="text" placeholder="Username" autocomplete="off" />
     <input id="password" type="password" placeholder="Password" autocomplete="off" />
-    <button id="signupBtn">Signup</button>
+    <button id="signupBtn">Daftar</button>
     <p id="msg" class="msg"></p>
     <p>Sudah punya akun? <a href="login.html">Login di sini</a></p>
   </div>
@@ -43,7 +43,7 @@
     function showMessage(msg) {
       const el = document.getElementById('msg');
       el.innerText = msg;
-      el.style.color = 'red';
+      el.style.color = '#f44336';
     }
   </script>
 </body>
