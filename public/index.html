@@ -1,83 +1,102 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barrio&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Modak&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
-  <title>HaiChat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Modak&family=Barrio&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nova+Round&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+  <title>HaiChat</title>
 </head>
 <body>
-  <div class="container">
-    <h2 id="welcome"></h2>
+  <button id="toggleTheme" class="theme-toggle">🌓</button>
 
-    <div>
-      <h3>Pengguna Online:</h3>
-      <div id="onlineUsers"></div>
-    </div>
+  <div class="container">
+    <h2 id="welcome"></h2>
 
-    <div id="chatbox"></div>
+    <div>
+      <h3>Pengguna Online:</h3>
+      <div id="onlineUsers"></div>
+    </div>
 
-    <div id="inputArea">
-      <input type="text" id="msgInput" placeholder="Tulis pesan..." />
-      <button onclick="sendMessage()">Kirim</button>
-    </div>
-    <button onclick="logout()">Logout</button>
-  </div>
+    <div id="chatbox"></div>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const username = localStorage.getItem('username');
-    const password = localStorage.getItem('password');
+    <div id="inputArea">
+      <input type="text" id="msgInput" placeholder="Tulis pesan..." />
+      <button onclick="sendMessage()">Kirim</button>
+    </div>
+    <button onclick="logout()">Logout</button>
+  </div>
 
-    if (!username || !password) {
-      window.location.href = 'login.html';
-    }
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    // Theme toggle
+    const toggleButton = document.getElementById('toggleTheme');
+    const currentTheme = localStorage.getItem('theme');
 
-    document.getElementById('welcome').innerText = "Hai, " + username;
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
 
-    const socket = io();
-    socket.emit('login', { username, password });
+    toggleButton.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const newTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+      localStorage.setItem('theme', newTheme);
+    });
 
-    socket.on('message', data => {
-      const div = document.createElement('div');
-      div.classList.add('message');
+    // Auth
+    const username = localStorage.getItem('username');
+    const password = localStorage.getItem('password');
 
-      if (data.user === username) {
-        div.classList.add('message-right');
-      } else {
-        div.classList.add('message-left');
-      }
+    if (!username || !password) {
+      window.location.href = 'login.html';
+    }
 
-      div.innerHTML = `<strong>${data.user}:</strong><br>${data.text}`;
+    document.getElementById('welcome').innerText = "Hai, " + username;
 
-      document.getElementById('chatbox').appendChild(div);
-      document.getElementById('chatbox').scrollTop = document.getElementById('chatbox').scrollHeight;
-    });
+    const socket = io();
+    socket.emit('login', { username, password });
 
-    socket.on('userList', users => {
-      const userList = users.map(user => `<li>${user} 🔵</li>`).join('');
-      document.getElementById('onlineUsers').innerHTML = "<ul>" + userList + "</ul>";
-    });
+    socket.on('message', data => {
+      const div = document.createElement('div');
+      div.classList.add('message');
 
-    function sendMessage() {
-      const text = document.getElementById('msgInput').value.trim();
+      if (data.user === username) {
+        div.classList.add('message-right');
+      } else {
+        div.classList.add('message-left');
+      }
 
-      if (text) {
-        socket.emit('message', { text });
-        document.getElementById('msgInput').value = '';
-      }
-    }
+      div.innerHTML = `<strong>${data.user}:</strong><br>${data.text}`;
 
-    function logout() {
-      localStorage.removeItem('username');
-      localStorage.removeItem('password');
-      socket.emit('logout');
-      window.location.href = 'login.html';
-    }
-  </script>
+      const chatbox = document.getElementById('chatbox');
+      chatbox.appendChild(div);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    });
+
+    socket.on('userList', users => {
+      const userList = users.map(user => `<li>${user} 🔵</li>`).join('');
+      document.getElementById('onlineUsers').innerHTML = "<ul>" + userList + "</ul>";
+    });
+
+    function sendMessage() {
+      const text = document.getElementById('msgInput').value.trim();
+
+      if (text) {
+        socket.emit('message', { text });
+        document.getElementById('msgInput').value = '';
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('username');
+      localStorage.removeItem('password');
+      socket.emit('logout');
+      window.location.href = 'login.html';
+    }
+  </script>
 </body>
 </html>
