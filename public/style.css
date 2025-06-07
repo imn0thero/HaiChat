@@ -4,8 +4,8 @@
 }
 
 body {
-  background-color: #121212;
-  color: #e0e0e0;
+  background-color: #000;
+  color: #2196f3;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
@@ -16,47 +16,46 @@ body {
   animation: fadeIn 1s ease;
 }
 
+/* Container untuk login/signup */
 .container {
-  background: #1e1e2f;
-  padding: 20px 30px;
+  background: #0f0f0f;
+  padding: 30px 40px;
   border-radius: 12px;
-  box-shadow: 0 0 12px #0d47a1cc;
+  box-shadow: 0 0 12px #2196f355;
   width: 90%;
-  max-width: 450px;
+  max-width: 420px;
   animation: slideDown 0.5s ease;
+  text-align: center;
 }
 
 h2 {
-  text-align: center;
   color: #2196f3;
   margin-bottom: 20px;
 }
 
 input[type="text"],
 input[type="password"],
-input[type="file"], 
-input[type="username"] {
+input[type="file"] {
   width: 100%;
   padding: 12px 10px;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
   border: none;
   border-radius: 8px;
-  background: #2a2a3d;
+  background: #1a1a1a;
   color: #e0e0e0;
   font-size: 16px;
   transition: background-color 0.3s;
 }
 
 input[type="text"]:focus,
-input[type="password"]:focus, 
-input[type="username"]:focus {
-  background: #33334d;
+input[type="password"]:focus {
+  background: #222;
   outline: none;
 }
 
 input[type="file"] {
-  padding: 5px 10px;
-  color: #eee;
+  color: #bbb;
+  padding: 6px 10px;
 }
 
 button {
@@ -69,7 +68,7 @@ button {
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 button:hover {
@@ -77,91 +76,21 @@ button:hover {
 }
 
 .msg {
-  text-align: center;
-  margin-top: 10px;
+  margin-top: 12px;
   font-weight: 600;
+  color: #4fc3f7;
 }
 
-#chatbox {
-  height: 300px;
-  overflow-y: auto;
-  border: 1px solid #2196f3;
-  border-radius: 8px;
-  padding: 10px;
-  background-color: #23232f;
-  margin-bottom: 12px;
-  font-size: 14px;
+/* Link Daftar/Login */
+a {
+  color: #4fc3f7;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
 }
 
-.message {
-  max-width: 70%;
-  margin-bottom: 8px;
-  padding: 8px 12px;
-  border-radius: 12px;
-  animation: fadeIn 0.3s ease;
-  word-wrap: break-word;
-  line-height: 1.3;
-}
-
-.message-left {
-  background-color: #323255;
-  color: #cfd8dc;
-  border-bottom-left-radius: 0;
-  align-self: flex-start;
-  margin-left: 0;
-}
-
-.message-right {
-  background-color: #2196f3;
-  color: white;
-  border-bottom-right-radius: 0;
-  align-self: flex-end;
-  margin-left: auto;
-  text-align: right;
-}
-
-#inputArea {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-top: 10px;
-}
-
-#msgInput {
-  flex: 1;
-  border-radius: 8px;
-  border: none;
-  padding: 10px;
-  font-size: 16px;
-  background: #2a2a3d;
-  color: #e0e0e0;
-}
-
-#msgInput:focus {
-  outline: none;
-  background: #33334d;
-}
-
-#mediaInput {
-  color: #eee;
-}
-
-#onlineUsers ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  max-height: 100px;
-  overflow-y: auto;
-}
-
-#onlineUsers li {
-  padding: 4px 8px;
-  border-bottom: 1px solid #2a2a3d;
-  color: #2196f3;
-  font-weight: 600;
-}
-
-/* Animations */
+/* Animasi */
 @keyframes fadeIn {
   from {opacity: 0;}
   to {opacity: 1;}
@@ -182,9 +111,6 @@ button:hover {
 @media (max-width: 500px) {
   .container {
     width: 95%;
-    padding: 15px 20px;
-  }
-  #chatbox {
-    height: 200px;
+    padding: 20px 25px;
   }
 }
