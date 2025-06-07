@@ -34,7 +34,7 @@
       window.location.href = 'login.html';
     }
 
-    document.getElementById('welcome').innerText = "Selamat datang, " + username;
+    document.getElementById('welcome').innerText = "Hai, " + username;
 
     const socket = io();
     socket.emit('login', { username, password });
