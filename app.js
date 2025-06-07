@@ -4,38 +4,18 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const path = require('path');
 const fs = require('fs');
-const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 
 const PORT = process.env.PORT || 3000;
 const USERS_FILE = path.join(__dirname, 'users.json');
-const UPLOAD_DIR = path.join(__dirname, 'public/uploads');
 
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// Setup multer storage with original file extension preserved
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, UPLOAD_DIR);
-  },
-  filename: (req, file, cb) => {
-    // Use uuid + original extension
-    const ext = path.extname(file.originalname);
-    cb(null, uuidv4() + ext);
-  }
-});
-const upload = multer({ storage });
-
 // Init users.json if not exist
 if (!fs.existsSync(USERS_FILE)) {
   fs.writeFileSync(USERS_FILE, JSON.stringify({}));
-}
-
-// Create uploads dir if not exist
-if (!fs.existsSync(UPLOAD_DIR)) {
-  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
 let onlineUsers = {};
@@ -55,13 +35,7 @@ function saveUsers(users) {
   fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
-// Upload media endpoint
-app.post('/upload', upload.single('media'), (req, res) => {
-  if (!req.file) return res.status(400).json({ success: false });
-  // Return relative path for client
-  const filePath = 'uploads/' + req.file.filename;
-  res.json({ success: true, path: filePath });
-});
+// 🔴 Hapus: Upload media endpoint — sudah tidak ada
 
 // Socket.IO
 io.on('connection', socket => {
