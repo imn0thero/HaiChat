@@ -45,7 +45,7 @@ input[type="file"] {
   background: #ffffff;
   color: #000000;
   font-size: 16px;
-  font-family: 'Homemade Apple', cursive;
+  font-family: 'Moirai One', system-ui;
 }
 
 input:focus {
@@ -62,7 +62,7 @@ button {
   background-color: transparent;
   color: #000000;
   font-size: 16px;
-  font-family: 'Homemade Apple', cursive;
+  font-family: 'Moirai One', system-ui;
   cursor: pointer;
 }
 
@@ -121,7 +121,7 @@ button:hover {
   border: 2px solid #000000;
   padding: 10px;
   font-size: 16px;
-  font-family: 'Homemade Apple', cursive;
+  font-family: 'Moirai One', system-ui;
 }
 
 #msgInput:focus {
