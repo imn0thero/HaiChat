@@ -50,7 +50,7 @@ input[type="file"] {
 
 input:focus {
   outline: none;
-  background: #f5f5f5;
+  background: #000000;
 }
 
 /* Tombol */
@@ -126,7 +126,7 @@ button:hover {
 
 #msgInput:focus {
   outline: none;
-  background: #f5f5f5;
+  background: #000000;
 }
 
 #onlineUsers ul {
