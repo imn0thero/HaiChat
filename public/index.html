@@ -9,15 +9,17 @@
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="/icon-512.png">
   <meta name="theme-color" content="#000000">
-
   <link rel="stylesheet" href="style.css" />
   <title>HaiChat</title>
 </head>
 <body>
-  <div class="container">
-    <!-- Toggle mode -->
+  <!-- Tombol pojok kanan atas -->
+  <div class="top-right">
     <button class="toggle-btn" onclick="toggleDarkMode()" id="modeIcon">🌞</button>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
 
+  <div class="container">
     <h2 id="welcome"></h2>
 
     <div>
@@ -31,12 +33,10 @@
       <input type="text" id="msgInput" placeholder="Tulis pesan..." />
       <button onclick="sendMessage()">Kirim</button>
     </div>
-    <button onclick="logout()">Logout</button>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    // Theme toggle
     function toggleDarkMode() {
       document.body.classList.toggle('dark-mode');
       const mode = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
@@ -49,50 +49,55 @@
       icon.textContent = mode === 'dark' ? '🌜' : '🌞';
     }
 
-    // Set initial theme on load
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      document.body.classList.add('dark-mode');
-    }
+    if (savedTheme === 'dark') document.body.classList.add('dark-mode');
     updateToggleIcon(savedTheme || 'light');
 
-    // Auth
     const username = localStorage.getItem('username');
     const password = localStorage.getItem('password');
-
-    if (!username || !password) {
-      window.location.href = 'login.html';
-    }
+    if (!username || !password) window.location.href = 'login.html';
 
     document.getElementById('welcome').innerText = "Hai, " + username;
 
     const socket = io();
     socket.emit('login', { username, password });
 
-    socket.on('message', data => {
-      const div = document.createElement('div');
-      div.classList.add('message');
-      if (data.user === username) {
-        div.classList.add('message-right');
-      } else {
-        div.classList.add('message-left');
+    socket.on('loginResult', data => {
+      if (!data.success) {
+        alert(data.message || 'Login gagal.');
+        localStorage.removeItem('username');
+        localStorage.removeItem('password');
+        window.location.href = 'login.html';
+        return;
       }
-      div.innerHTML = `<strong>${data.user}:</strong><br>${data.text}`;
-      const chatbox = document.getElementById('chatbox');
-      chatbox.appendChild(div);
-      chatbox.scrollTop = chatbox.scrollHeight;
+
+      if (data.messages && Array.isArray(data.messages)) {
+        data.messages.forEach(msg => appendMessage(msg));
+      }
     });
+
+    socket.on('message', data => appendMessage(data));
 
     socket.on('userList', users => {
       const userList = users.map(user => `<li>${user} 🔵</li>`).join('');
       document.getElementById('onlineUsers').innerHTML = "<ul>" + userList + "</ul>";
     });
 
+    function appendMessage(data) {
+      const div = document.createElement('div');
+      div.classList.add('message', data.user === username ? 'message-right' : 'message-left');
+      div.innerHTML = `<strong>${escapeHtml(data.user)}:</strong><br>${escapeHtml(data.text)}`;
+      const chatbox = document.getElementById('chatbox');
+      chatbox.appendChild(div);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
     function sendMessage() {
-      const text = document.getElementById('msgInput').value.trim();
+      const input = document.getElementById('msgInput');
+      const text = input.value.trim();
       if (text) {
         socket.emit('message', { text });
-        document.getElementById('msgInput').value = '';
+        input.value = '';
       }
     }
 
@@ -101,6 +106,12 @@
       localStorage.removeItem('password');
       socket.emit('logout');
       window.location.href = 'login.html';
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+      })[m]);
     }
   </script>
 </body>
