@@ -8,34 +8,52 @@ const { v4: uuidv4 } = require('uuid');
 
 const PORT = process.env.PORT || 3000;
 const USERS_FILE = path.join(__dirname, 'users.json');
+const MESSAGES_FILE = path.join(__dirname, 'messages.json');
 
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// Init users.json if not exist
+// Init users.json & messages.json if not exist
 if (!fs.existsSync(USERS_FILE)) {
   fs.writeFileSync(USERS_FILE, JSON.stringify({}));
 }
+if (!fs.existsSync(MESSAGES_FILE)) {
+  fs.writeFileSync(MESSAGES_FILE, JSON.stringify([]));
+}
 
+// Load saved messages
+let messages = loadMessages();
 let onlineUsers = {};
-let messages = [];
 
 // Clear messages older than 24 hours every minute
 setInterval(() => {
   const now = Date.now();
   messages = messages.filter(m => now - m.time < 24 * 60 * 60 * 1000);
+  saveMessages(messages); // Save updated messages
 }, 60 * 1000);
 
 // Helper functions
 function loadUsers() {
   return JSON.parse(fs.readFileSync(USERS_FILE, 'utf-8'));
 }
+
 function saveUsers(users) {
   fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
-// 🔴 Hapus: Upload media endpoint — sudah tidak ada
+function loadMessages() {
+  try {
+    return JSON.parse(fs.readFileSync(MESSAGES_FILE, 'utf-8'));
+  } catch (err) {
+    console.error("Gagal memuat pesan:", err);
+    return [];
+  }
+}
+
+function saveMessages(msgs) {
+  fs.writeFileSync(MESSAGES_FILE, JSON.stringify(msgs, null, 2));
+}
 
 // Socket.IO
 io.on('connection', socket => {
@@ -67,7 +85,11 @@ io.on('connection', socket => {
     if (users[data.username] && users[data.username] === data.password) {
       currentUser = data.username;
       onlineUsers[currentUser] = true;
+
+      // Kirim login berhasil dan semua pesan yang disimpan
       socket.emit('loginResult', { success: true, user: currentUser, messages });
+
+      // Perbarui daftar pengguna online
       io.emit('userList', Object.keys(onlineUsers));
     } else {
       socket.emit('loginResult', { success: false, message: 'Username atau password salah' });
@@ -84,6 +106,8 @@ io.on('connection', socket => {
       time: Date.now()
     };
     messages.push(messageData);
+    saveMessages(messages); // Simpan setiap pesan baru ke file
+
     io.emit('message', messageData);
   });
 
