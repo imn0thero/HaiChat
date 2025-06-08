@@ -98,13 +98,15 @@ io.on('connection', socket => {
 
   // Receive message
   socket.on('message', data => {
-    if (!currentUser) return;
+    if (!currentUser || !data.text || data.text.trim() === "") return;
+
     const messageData = {
       id: uuidv4(),
       user: currentUser,
-      text: data.text,
+      text: data.text.trim(),
       time: Date.now()
     };
+
     messages.push(messageData);
     saveMessages(messages); // Simpan setiap pesan baru ke file
 
