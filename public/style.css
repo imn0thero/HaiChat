@@ -1,14 +1,11 @@
-/* Font */
 @import url('https://fonts.googleapis.com/css2?family=Nova+Round&display=swap');
 
-/* Reset */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* Body */
 body {
   font-family: 'Nova Round', cursive;
   background-color: #ffffff;
@@ -27,7 +24,6 @@ body.dark-mode {
   color: #ffffff;
 }
 
-/* Container */
 .container {
   position: relative;
   background: #ffffff;
@@ -47,7 +43,6 @@ body.dark-mode .container {
   box-shadow: 4px 4px 0 #ffffff;
 }
 
-/* Sobekan kertas kiri */
 .container::before {
   content: "";
   position: absolute;
@@ -55,51 +50,12 @@ body.dark-mode .container {
   top: 0;
   height: 100%;
   width: 20px;
-  background: repeating-linear-gradient(
-    #fff,
-    #fff 6px,
-    #000 6px,
-    #000 7px
-  );
+  background: repeating-linear-gradient(#fff, #fff 6px, #000 6px, #000 7px);
   z-index: 1;
 }
 
 body.dark-mode .container::before {
-  background: repeating-linear-gradient(
-    #1e1e1e,
-    #1e1e1e 6px,
-    #ffffff 6px,
-    #ffffff 7px
-  );
-}
-
-/* Toggle Button (Dark Mode) */
-.toggle-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-family: 'Nova Round', cursive;
-  font-size: 16px;
-  background: transparent;
-  border: 2px dashed #000;
-  border-radius: 10px;
-  padding: 6px 10px;
-  color: #000;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.toggle-btn:hover {
-  background-color: #f0f0f0;
-}
-
-body.dark-mode .toggle-btn {
-  color: #fff;
-  border-color: #fff;
-}
-
-body.dark-mode .toggle-btn:hover {
-  background-color: #333;
+  background: repeating-linear-gradient(#1e1e1e, #1e1e1e 6px, #ffffff 6px, #ffffff 7px);
 }
 
 /* Heading */
@@ -120,7 +76,6 @@ h2, h3 {
 #onlineUsers li {
   padding: 4px 8px;
 }
-
 
 /* Chatbox */
 #chatbox {
@@ -181,7 +136,6 @@ body.dark-mode .message {
   margin-top: 10px;
 }
 
-/* Input */
 input[type="text"],
 input[type="password"],
 input[type="file"],
@@ -211,7 +165,7 @@ body.dark-mode #msgInput {
   border-color: #fff;
 }
 
-/* Button */
+/* Tombol umum */
 button {
   padding: 10px;
   border: 2px solid #000;
@@ -237,6 +191,68 @@ body.dark-mode button:hover {
   background-color: #333;
 }
 
+/* Tombol pojok kanan atas */
+.top-right {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  gap: 10px;
+  z-index: 999;
+}
+
+/* Logout khusus */
+.logout-btn {
+  font-family: 'Nova Round', cursive;
+  font-size: 16px;
+  background: transparent;
+  border: 2px dashed #000;
+  border-radius: 10px;
+  padding: 6px 10px;
+  color: #000;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.logout-btn:hover {
+  background-color: #f0f0f0;
+}
+
+body.dark-mode .logout-btn {
+  color: #fff;
+  border-color: #fff;
+}
+
+body.dark-mode .logout-btn:hover {
+  background-color: #333;
+}
+
+/* Toggle button (tanpa posisi absolut lagi) */
+.toggle-btn {
+  font-family: 'Nova Round', cursive;
+  font-size: 16px;
+  background: transparent;
+  border: 2px dashed #000;
+  border-radius: 10px;
+  padding: 6px 10px;
+  color: #000;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.toggle-btn:hover {
+  background-color: #f0f0f0;
+}
+
+body.dark-mode .toggle-btn {
+  color: #fff;
+  border-color: #fff;
+}
+
+body.dark-mode .toggle-btn:hover {
+  background-color: #333;
+}
+
 /* Responsive */
 @media (max-width: 500px) {
   .container {
@@ -246,5 +262,11 @@ body.dark-mode button:hover {
 
   #chatbox {
     height: 200px;
+  }
+
+  .top-right {
+    flex-direction: column;
+    top: 10px;
+    right: 10px;
   }
 }
