@@ -101,7 +101,7 @@ h3 {
 #chatbox {
   border: 1px dashed #999;
   border-radius: 8px;
-  height: 500px;
+  height: 300px;
   overflow-y: auto;
   padding: 10px;
   background-color: #fafafa;
@@ -179,6 +179,7 @@ body.dark-mode .message-right {
 
   #chatbox {
     height: 250px;
+    
   }
 
   .toggle-btn,
