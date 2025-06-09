@@ -13,6 +13,10 @@
   <title>SayHai</title>
 </head>
 <body>
+
+  <!-- Tanggal & Waktu -->
+  <div id="datetime" style="text-align: center; font-weight: bold; margin: 10px 0;"></div>
+
   <div class="container">
     <!-- Tombol pojok kanan atas di dalam container -->
     <div class="top-right">
@@ -37,6 +41,17 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
+    // Tampilkan waktu dan tanggal saat ini
+    function updateDateTime() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const date = now.toLocaleDateString('id-ID', options);
+      const time = now.toLocaleTimeString('id-ID');
+      document.getElementById('datetime').textContent = `${date} | ${time}`;
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime(); // panggil saat halaman dimuat
+
     // Minta izin notifikasi
     if ("Notification" in window && Notification.permission !== "granted") {
       Notification.requestPermission();
