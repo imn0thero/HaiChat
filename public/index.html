@@ -140,18 +140,6 @@
       })[m]);
     }
   </script>
-  <script>
-  // Saat layar disentuh atau diklik, munculkan karakter 🥰
-  document.body.addEventListener('click', function (e) {
-    const span = document.createElement('span');
-    span.classList.add('touch-effect');
-    span.textContent = '💕';
-    span.style.left = `${e.pageX}px`;
-    span.style.top = `${e.pageY}px`;
-    document.body.appendChild(span);
-    setTimeout(() => span.remove(), 1000);
-  });
-</script>
-
+  
 </body>
 </html>
