@@ -37,6 +37,19 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
+    if ("Notification" in window && Notification.permission !== "granted") {
+  Notification.requestPermission();
+}
+
+socket.on('message', data => {
+  appendMessage(data);
+
+  // Tampilkan notifikasi jika pesan dari orang lain
+  if (data.user !== username && Notification.permission === "granted") {
+    new Notification("Ping"); // tanpa isi dan tanpa ikon
+  }
+});
+
     // Toggle dark/light mode dan simpan preferensi
     function toggleDarkMode() {
       document.body.classList.toggle('dark-mode');
