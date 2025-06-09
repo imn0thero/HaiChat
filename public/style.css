@@ -29,7 +29,7 @@ body.dark-mode {
 .datetime-display {
   font-family: 'Nova Round', cursive;
   font-size: 18px;
-  text-align: center;
+  text-align: left;
   margin-bottom: 20px;
   padding: 10px 15px;
   border: 2px dashed #000;
