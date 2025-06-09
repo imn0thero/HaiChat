@@ -37,30 +37,9 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
+    // Minta izin notifikasi
     if ("Notification" in window && Notification.permission !== "granted") {
-  Notification.requestPermission();
-}
-
-socket.on('message', data => {
-  appendMessage(data);
-
-  // Tampilkan notifikasi jika pesan dari orang lain
-  if (data.user !== username && Notification.permission === "granted") {
-    new Notification("Ping"); // tanpa isi dan tanpa ikon
-  }
-});
-
-    // Toggle dark/light mode dan simpan preferensi
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
-      const mode = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-      localStorage.setItem('theme', mode);
-      updateToggleIcon(mode);
-    }
-
-    function updateToggleIcon(mode) {
-      const icon = document.getElementById('modeIcon');
-      icon.textContent = mode === 'dark' ? '🌜' : '🌞';
+      Notification.requestPermission();
     }
 
     // Load tema dari localStorage
@@ -77,13 +56,9 @@ socket.on('message', data => {
 
     document.getElementById('welcome').innerText = "Hai, " + username;
 
-    // Koneksi socket
     const socket = io();
-
-    // Kirim login ke server
     socket.emit('login', { username, password });
 
-    // Terima hasil login
     socket.on('loginResult', data => {
       if (!data.success) {
         alert(data.message || 'Login gagal.');
@@ -93,19 +68,28 @@ socket.on('message', data => {
         return;
       }
 
-      // Jika berhasil login, tampilkan semua pesan yang tersimpan
+      // Tampilkan pesan lama jika ada
       if (data.messages && Array.isArray(data.messages)) {
         data.messages.forEach(msg => appendMessage(msg));
       }
     });
 
-    // Terima daftar pengguna online terbaru
+    // Tangani pesan baru
+    socket.on('message', data => {
+      appendMessage(data);
+
+      // Tampilkan notifikasi jika pesan dari orang lain
+      if (data.user !== username && Notification.permission === "granted") {
+        new Notification("Ping");
+      }
+    });
+
+    // Daftar pengguna online
     socket.on('userList', users => {
       const userList = users.map(user => `<li>${escapeHtml(user)} 🔵</li>`).join('');
       document.getElementById('onlineUsers').innerHTML = "<ul>" + userList + "</ul>";
     });
 
-    // Fungsi menampilkan pesan ke chatbox
     function appendMessage(data) {
       const div = document.createElement('div');
       div.classList.add('message', data.user === username ? 'message-right' : 'message-left');
@@ -115,7 +99,6 @@ socket.on('message', data => {
       chatbox.scrollTop = chatbox.scrollHeight;
     }
 
-    // Fungsi kirim pesan ke server
     function sendMessage() {
       const input = document.getElementById('msgInput');
       const text = input.value.trim();
@@ -125,7 +108,6 @@ socket.on('message', data => {
       }
     }
 
-    // Logout dan hapus data lokal
     function logout() {
       localStorage.removeItem('username');
       localStorage.removeItem('password');
@@ -133,7 +115,18 @@ socket.on('message', data => {
       window.location.href = 'login.html';
     }
 
-    // Escape HTML untuk mencegah XSS
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const mode = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+      localStorage.setItem('theme', mode);
+      updateToggleIcon(mode);
+    }
+
+    function updateToggleIcon(mode) {
+      const icon = document.getElementById('modeIcon');
+      icon.textContent = mode === 'dark' ? '🌜' : '🌞';
+    }
+
     function escapeHtml(str) {
       return str.replace(/[&<>"']/g, m => ({
         '&': '&amp;',
