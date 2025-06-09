@@ -12,7 +12,7 @@ body {
   color: #000000;
   min-height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
   padding: 20px;
   scroll-behavior: smooth;
@@ -24,6 +24,30 @@ body.dark-mode {
   color: #ffffff;
 }
 
+/* DATETIME DISPLAY */
+.datetime-display {
+  font-family: 'Nova Round', cursive;
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 2px dashed #000;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+  color: #000;
+  box-shadow: 2px 2px 0 #000;
+  width: 100%;
+  max-width: 600px;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+body.dark-mode .datetime-display {
+  background-color: #1e1e1e;
+  color: #fff;
+  border-color: #fff;
+  box-shadow: 2px 2px 0 #fff;
+}
+
 .container {
   position: relative;
   background: #ffffff;
@@ -31,7 +55,7 @@ body.dark-mode {
   border-radius: 12px;
   padding: 25px 30px;
   width: 100%;
-  max-width: 600px; /* Diperbesar */
+  max-width: 600px;
   box-shadow: 4px 4px 0 #000000;
   overflow: hidden;
   transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
@@ -179,7 +203,6 @@ body.dark-mode .message-right {
 
   #chatbox {
     height: 250px;
-    
   }
 
   .toggle-btn,
@@ -190,5 +213,10 @@ body.dark-mode .message-right {
 
   h2 {
     font-size: 20px;
+  }
+
+  .datetime-display {
+    font-size: 16px;
+    padding: 8px;
   }
 }
