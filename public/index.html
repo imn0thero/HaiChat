@@ -6,7 +6,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Modak&family=Barrio&family=Nova+Round&display=swap" rel="stylesheet" />
-  <link rel="manifest" href="/manifest.json" />
   <link rel="icon" href="/icon-512.png" />
   <meta name="theme-color" content="#000000" />
   <link rel="stylesheet" href="style.css" />
@@ -14,11 +13,10 @@
 </head>
 <body>
 
-  <!-- Tanggal & Waktu -->
-  <div id="datetime" style="text-align: center; font-weight: bold; margin: 10px 0;"></div>
+  <!-- Tanggal & Waktu di atas container -->
+  <div id="datetime" class="datetime-display"></div>
 
   <div class="container">
-    <!-- Tombol pojok kanan atas di dalam container -->
     <div class="top-right">
       <button class="toggle-btn" onclick="toggleDarkMode()" id="modeIcon">🌞</button>
       <button class="logout-btn" onclick="logout()">Logout</button>
@@ -41,7 +39,6 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    // Tampilkan waktu dan tanggal saat ini
     function updateDateTime() {
       const now = new Date();
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -50,19 +47,16 @@
       document.getElementById('datetime').textContent = `${date} | ${time}`;
     }
     setInterval(updateDateTime, 1000);
-    updateDateTime(); // panggil saat halaman dimuat
+    updateDateTime();
 
-    // Minta izin notifikasi
     if ("Notification" in window && Notification.permission !== "granted") {
       Notification.requestPermission();
     }
 
-    // Load tema dari localStorage
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') document.body.classList.add('dark-mode');
     updateToggleIcon(savedTheme || 'light');
 
-    // Ambil username dan password dari localStorage, jika tidak ada redirect ke login
     const username = localStorage.getItem('username');
     const password = localStorage.getItem('password');
     if (!username || !password) {
@@ -82,24 +76,18 @@
         window.location.href = 'login.html';
         return;
       }
-
-      // Tampilkan pesan lama jika ada
       if (data.messages && Array.isArray(data.messages)) {
         data.messages.forEach(msg => appendMessage(msg));
       }
     });
 
-    // Tangani pesan baru
     socket.on('message', data => {
       appendMessage(data);
-
-      // Tampilkan notifikasi jika pesan dari orang lain
       if (data.user !== username && Notification.permission === "granted") {
         new Notification("Ping");
       }
     });
 
-    // Daftar pengguna online
     socket.on('userList', users => {
       const userList = users.map(user => `<li>${escapeHtml(user)} 🔵</li>`).join('');
       document.getElementById('onlineUsers').innerHTML = "<ul>" + userList + "</ul>";
