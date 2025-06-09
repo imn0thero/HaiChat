@@ -99,9 +99,6 @@ socket.on('message', data => {
       }
     });
 
-    // Terima pesan baru
-    socket.on('message', data => appendMessage(data));
-
     // Terima daftar pengguna online terbaru
     socket.on('userList', users => {
       const userList = users.map(user => `<li>${escapeHtml(user)} 🔵</li>`).join('');
