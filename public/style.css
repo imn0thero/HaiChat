@@ -9,40 +9,45 @@ body {
   overflow: hidden;
 }
 
-/* Baris atas: logout, tanggal, mode gelap */
+/* Baris atas: logout kiri, tanggal tengah, mode kanan */
 .top-bar {
   position: fixed;
   top: 10px;
-  left: 10px;
-  right: 10px;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 15px;
   z-index: 999;
-  padding: 0 10px;
-  flex-wrap: wrap;
 }
 
-.top-bar .left-side {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+.logout-btn {
+  background-color: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+  padding: 6px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: 'Nova Round', cursive;
 }
 
-.top-bar .datetime {
+.logout-btn:hover {
+  background-color: #fff;
+  color: #000;
+}
+
+.datetime {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 14px;
   font-weight: bold;
+  font-family: 'Nova Round', cursive;
   white-space: nowrap;
 }
 
-.top-bar .right-side {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.logout-btn,
+/* Mode gelap toggle kanan atas (jika ada) */
 .toggle-btn {
   background-color: transparent;
   color: #fff;
@@ -53,7 +58,6 @@ body {
   font-family: 'Nova Round', cursive;
 }
 
-.logout-btn:hover,
 .toggle-btn:hover {
   background-color: #fff;
   color: #000;
@@ -62,7 +66,7 @@ body {
 /* Judul & pengguna online */
 h2, h3 {
   text-align: center;
-  margin-top: 100px;
+  margin-top: 70px;
 }
 
 #onlineUsers ul {
@@ -80,11 +84,11 @@ h2, h3 {
 #chatbox {
   height: 300px;
   overflow-y: auto;
-  background-color: #222;
+  background-color: #111;
   border-radius: 10px;
   padding: 10px;
   margin: 10px auto;
-  border: 1px solid #555;
+  border: 1px solid #fff;
   max-width: 600px;
   width: 90%;
 }
@@ -95,17 +99,17 @@ h2, h3 {
   border-radius: 10px;
   word-wrap: break-word;
   max-width: 80%;
-  border: 1px solid #aaa;
+  border: 1px solid #fff;
 }
 
 .message-left {
-  background-color: #333;
+  background-color: #222;
   text-align: left;
 }
 
 .message-right {
-  background-color: #007bff;
-  color: #fff;
+  background-color: #fff;
+  color: #000;
   text-align: right;
   margin-left: auto;
 }
@@ -123,14 +127,14 @@ h2, h3 {
   flex: 1;
   padding: 10px;
   border-radius: 10px;
-  border: 1px solid #888;
-  background-color: #333;
+  border: 1px solid #fff;
+  background-color: #111;
   color: #fff;
   font-family: 'Nova Round', cursive;
 }
 
 #msgInput::placeholder {
-  color: #aaa;
+  color: #ccc;
 }
 
 #inputArea button {
@@ -148,39 +152,21 @@ h2, h3 {
   color: #000;
 }
 
-/* Mode gelap */
-.dark-mode {
-  background-color: #000;
-  color: #fff;
-}
-
-.dark-mode #chatbox {
-  background-color: #222;
-  border-color: #555;
-}
-
-.dark-mode #msgInput {
-  background-color: #333;
-  color: #fff;
-}
-
-.dark-mode #inputArea button,
-.dark-mode .logout-btn,
-.dark-mode .toggle-btn {
-  border-color: #fff;
-  color: #fff;
-}
-
-.dark-mode .datetime {
-  color: #ccc;
-}
-
 /* Responsif */
 @media (max-width: 480px) {
   .top-bar {
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: flex-start;
-    gap: 10px;
+  }
+
+  .datetime {
+    top: 50px;
+    position: static;
+    transform: none;
+    margin: auto;
+    text-align: center;
+    width: 100%;
   }
 
   #inputArea {
