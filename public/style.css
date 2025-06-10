@@ -67,7 +67,7 @@ h2, h3 {
 
 /* Chatbox */
 #chatbox {
-  height: 300px;
+  height: 60vh;
   overflow-y: auto;
   background-color: #222;
   border-radius: 10px;
