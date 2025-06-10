@@ -1,30 +1,25 @@
-html, body {
+/* Font dan warna dasar */
+body {
   margin: 0;
   padding: 20px;
-  height: 100dvh;
   font-family: 'Nova Round', cursive;
-  background-color: #111;
+  background-color: #000;
   color: #fff;
+  min-height: 100vh;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  /* Efek visual dari container */
-  border: 2px solid #fff;
-  border-radius: 15px;
-  box-shadow: 0 0 10px #444;
-  overflow: hidden;
 }
 
 /* Tombol pojok kanan atas */
 .top-right {
-  position: absolute;
+  position: fixed;
   top: 10px;
   right: 10px;
   display: flex;
   gap: 10px;
-  z-index: 1;
+  z-index: 1000;
 }
 
 .toggle-btn,
@@ -44,26 +39,37 @@ html, body {
   color: #000;
 }
 
+/* Tanggal & waktu */
+#datetime {
+  margin-top: 50px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  color: #fff;
+}
+
+/* Judul dan pengguna online */
 h2, h3 {
   text-align: center;
-  margin: 40px 0 10px;
+  margin: 20px 0 10px;
 }
 
 #onlineUsers ul {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 0 auto;
   text-align: center;
 }
+
 #onlineUsers li {
   margin: 5px 0;
 }
 
+/* Chatbox */
 #chatbox {
-  flex: 1;
   width: 100%;
-  max-width: 420px;
-  height: 60vh;
+  max-width: 600px;
+  height: 300px;
   overflow-y: auto;
   background-color: #222;
   border-radius: 10px;
@@ -79,10 +85,12 @@ h2, h3 {
   word-wrap: break-word;
   max-width: 80%;
 }
+
 .message-left {
   background-color: #333;
   text-align: left;
 }
+
 .message-right {
   background-color: #007bff;
   color: #fff;
@@ -90,12 +98,13 @@ h2, h3 {
   margin-left: auto;
 }
 
+/* Input pesan */
 #inputArea {
   display: flex;
   gap: 10px;
   width: 100%;
-  max-width: 420px;
-  margin-bottom: 10px;
+  max-width: 600px;
+  margin-bottom: 20px;
 }
 
 #msgInput {
@@ -107,9 +116,11 @@ h2, h3 {
   color: #fff;
   font-family: 'Nova Round', cursive;
 }
+
 #msgInput::placeholder {
   color: #aaa;
 }
+
 #inputArea button {
   padding: 10px 20px;
   border-radius: 10px;
@@ -119,17 +130,10 @@ h2, h3 {
   cursor: pointer;
   font-family: 'Nova Round', cursive;
 }
+
 #inputArea button:hover {
   background-color: #fff;
   color: #000;
-}
-
-.datetime-inside {
-  text-align: center;
-  font-weight: bold;
-  font-size: 14px;
-  color: #ccc;
-  margin-top: auto;
 }
 
 /* Mode gelap */
@@ -137,12 +141,15 @@ h2, h3 {
   background-color: #000;
   color: #fff;
 }
+
 .dark-mode #msgInput {
   background-color: #333;
   color: #fff;
 }
-.dark-mode .toggle-btn,
-.dark-mode .logout-btn {
+
+.dark-mode #inputArea button,
+.dark-mode .logout-btn,
+.dark-mode .toggle-btn {
   border-color: #fff;
   color: #fff;
 }
