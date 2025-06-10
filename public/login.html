@@ -5,17 +5,89 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barrio&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Modak&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Nova+Round&display=swap" rel="stylesheet">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" href="/icon-512.png">
   <meta name="theme-color" content="#000000">
   <link rel="stylesheet" href="style.css" />
   <title>HaiChat - Login</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Nova Round', cursive;
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #111;
+      padding: 30px;
+      border-radius: 15px;
+      border: 1px solid #fff;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: 1px solid #fff;
+      background-color: #000;
+      color: #fff;
+      font-family: 'Nova Round', cursive;
+    }
+
+    input::placeholder {
+      color: #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 2px solid #fff;
+      background-color: transparent;
+      color: #fff;
+      cursor: pointer;
+      font-family: 'Nova Round', cursive;
+    }
+
+    button:hover {
+      background-color: #fff;
+      color: #000;
+    }
+
+    .msg {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    a {
+      color: #4fc3f7;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <div id="inputarea">
+  <div class="container">
     <h2>Login</h2>
     <input id="username" type="text" placeholder="Username" autocomplete="off" />
     <input id="password" type="password" placeholder="Password" autocomplete="off" />
@@ -53,7 +125,7 @@
     function showMessage(msg) {
       const el = document.getElementById('msg');
       el.innerText = msg;
-      el.style.color = '#f44336'; // merah terang
+      el.style.color = '#f44336';
     }
   </script>
 </body>
