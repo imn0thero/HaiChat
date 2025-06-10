@@ -3,18 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Nova+Round&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Modak&family=Barrio&family=Nova+Round&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/icon-512.png" />
+  <meta name="theme-color" content="#000000" />
   <link rel="stylesheet" href="style.css" />
-  <title>SayHai Full</title>
+  <title>SayHai</title>
 </head>
 <body>
+
   <!-- Tombol pojok kanan atas -->
   <div class="top-right">
     <button class="toggle-btn" onclick="toggleDarkMode()" id="modeIcon">🌞</button>
     <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
-  <h2 id="welcome">Hai, Username</h2>
+  <!-- Tanggal & Waktu -->
+  <div id="datetime" class="datetime-display"></div>
+
+  <h2 id="welcome"></h2>
 
   <h3>Pengguna Online:</h3>
   <div id="onlineUsers"></div>
@@ -26,9 +35,9 @@
     <button onclick="sendMessage()">Kirim</button>
   </div>
 
-  <div class="datetime-inside" id="datetime"></div>
-
+  <script src="/socket.io/socket.io.js"></script>
   <script>
+    // (Semua JavaScript tetap sama seperti sebelumnya)
     function updateDateTime() {
       const now = new Date();
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -38,6 +47,97 @@
     }
     setInterval(updateDateTime, 1000);
     updateDateTime();
+
+    if ("Notification" in window && Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') document.body.classList.add('dark-mode');
+    updateToggleIcon(savedTheme || 'light');
+
+    const username = localStorage.getItem('username');
+    const password = localStorage.getItem('password');
+    if (!username || !password) {
+      window.location.href = 'login.html';
+    }
+
+    document.getElementById('welcome').innerText = "Hai, " + username;
+
+    const socket = io();
+    socket.emit('login', { username, password });
+
+    socket.on('loginResult', data => {
+      if (!data.success) {
+        alert(data.message || 'Login gagal.');
+        localStorage.removeItem('username');
+        localStorage.removeItem('password');
+        window.location.href = 'login.html';
+        return;
+      }
+      if (data.messages && Array.isArray(data.messages)) {
+        data.messages.forEach(msg => appendMessage(msg));
+      }
+    });
+
+    socket.on('message', data => {
+      appendMessage(data);
+      if (data.user !== username && Notification.permission === "granted") {
+        new Notification("Ping");
+      }
+    });
+
+    socket.on('userList', users => {
+      const userList = users.map(user => `<li>${escapeHtml(user)} 🔵</li>`).join('');
+      document.getElementById('onlineUsers').innerHTML = "<ul>" + userList + "</ul>";
+    });
+
+    function appendMessage(data) {
+      const div = document.createElement('div');
+      div.classList.add('message', data.user === username ? 'message-right' : 'message-left');
+      div.innerHTML = `<strong>${escapeHtml(data.user)}:</strong><br>${escapeHtml(data.text)}`;
+      const chatbox = document.getElementById('chatbox');
+      chatbox.appendChild(div);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('msgInput');
+      const text = input.value.trim();
+      if (text) {
+        socket.emit('message', { text });
+        input.value = '';
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('username');
+      localStorage.removeItem('password');
+      socket.emit('logout');
+      window.location.href = 'login.html';
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const mode = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+      localStorage.setItem('theme', mode);
+      updateToggleIcon(mode);
+    }
+
+    function updateToggleIcon(mode) {
+      const icon = document.getElementById('modeIcon');
+      icon.textContent = mode === 'dark' ? '🌜' : '🌞';
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      })[m]);
+    }
   </script>
 </body>
 </html>
