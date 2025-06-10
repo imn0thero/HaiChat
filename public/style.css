@@ -1,193 +1,170 @@
-@import url('https://fonts.googleapis.com/css2?family=Nova+Round&display=swap');
-
-* {
-  box-sizing: border-box;
+/* Font dan warna dasar */
+body {
   margin: 0;
   padding: 0;
-}
-
-body {
   font-family: 'Nova Round', cursive;
-  background-color: #ffffff;
-  color: #000000;
-  min-height: 100vh;
+  background-color: #000;
+  color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
-  scroll-behavior: smooth;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-body.dark-mode {
-  background-color: #121212;
-  color: #ffffff;
+  height: 100vh;
 }
 
 .container {
-  position: relative;
-  background: #ffffff;
-  border: 2px solid #000000;
-  border-radius: 12px;
-  padding: 25px 30px;
+  border: 2px solid #fff;
+  border-radius: 15px;
+  padding: 20px;
+  max-width: 400px;
   width: 100%;
-  max-width: 600px; /* Diperbesar */
-  box-shadow: 4px 4px 0 #000000;
-  overflow: hidden;
-  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+  background-color: #111;
+  position: relative;
+  box-shadow: 0 0 10px #444;
 }
 
-body.dark-mode .container {
-  background: #1e1e1e;
-  border-color: #ffffff;
-  box-shadow: 4px 4px 0 #ffffff;
-}
-
-.container .top-right {
+/* Tombol pojok kanan atas */
+.top-right {
   position: absolute;
   top: 10px;
   right: 10px;
   display: flex;
   gap: 10px;
-  z-index: 10;
 }
 
 .toggle-btn,
 .logout-btn {
-  font-family: 'Nova Round', cursive;
-  font-size: 16px;
-  background: transparent;
-  border: 2px dashed #000;
+  background-color: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+  padding: 6px 12px;
   border-radius: 10px;
-  padding: 6px 10px;
-  color: #000;
   cursor: pointer;
-  transition: all 0.3s;
+  font-family: 'Nova Round', cursive;
 }
 
 .toggle-btn:hover,
 .logout-btn:hover {
-  background-color: #f0f0f0;
+  background-color: #fff;
+  color: #000;
 }
 
-body.dark-mode .toggle-btn,
-body.dark-mode .logout-btn {
-  color: #fff;
-  border-color: #fff;
-}
-
-body.dark-mode .toggle-btn:hover,
-body.dark-mode .logout-btn:hover {
-  background-color: #333;
-}
-
-h2 {
-  margin-bottom: 15px;
-  font-size: 24px;
+/* Judul dan pengguna online */
+h2, h3 {
   text-align: center;
-}
-
-h3 {
-  margin-top: 20px;
-  margin-bottom: 10px;
+  margin-top: 40px;
 }
 
 #onlineUsers ul {
   list-style: none;
-  padding-left: 0;
-  font-size: 14px;
+  padding: 0;
+  margin: 0;
+  text-align: center;
 }
 
+#onlineUsers li {
+  margin: 5px 0;
+}
+
+/* Chatbox */
 #chatbox {
-  border: 1px dashed #999;
-  border-radius: 8px;
   height: 300px;
   overflow-y: auto;
+  background-color: #222;
+  border-radius: 10px;
   padding: 10px;
-  background-color: #fafafa;
-  margin-top: 10px;
-  margin-bottom: 15px;
-}
-
-body.dark-mode #chatbox {
-  background-color: #2c2c2c;
-  border-color: #666;
+  margin: 10px 0;
+  border: 1px solid #555;
 }
 
 .message {
-  padding: 8px 12px;
-  margin-bottom: 8px;
+  padding: 8px;
+  margin: 5px 0;
   border-radius: 10px;
-  max-width: 75%;
   word-wrap: break-word;
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+  max-width: 80%;
 }
 
 .message-left {
-  background-color: #e0e0e0;
-  align-self: flex-start;
+  background-color: #333;
+  text-align: left;
 }
 
 .message-right {
-  background-color: #d1ffd1;
-  align-self: flex-end;
+  background-color: #007bff;
+  color: #fff;
+  text-align: right;
   margin-left: auto;
 }
 
-body.dark-mode .message-left {
-  background-color: #3a3a3a;
-}
-
-body.dark-mode .message-right {
-  background-color: #2e4d2e;
-}
-
+/* Input pesan */
 #inputArea {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
 }
 
 #msgInput {
   flex: 1;
   padding: 10px;
-  font-size: 14px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  outline: none;
+  border-radius: 10px;
+  border: 1px solid #888;
+  background-color: #333;
+  color: #fff;
+  font-family: 'Nova Round', cursive;
+}
+
+#msgInput::placeholder {
+  color: #aaa;
 }
 
 #inputArea button {
-  padding: 10px 16px;
-  border: none;
-  background-color: #4caf50;
-  color: white;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 2px solid #fff;
+  background-color: transparent;
+  color: #fff;
   cursor: pointer;
-  transition: background-color 0.3s;
+  font-family: 'Nova Round', cursive;
 }
 
 #inputArea button:hover {
-  background-color: #45a049;
+  background-color: #fff;
+  color: #000;
 }
 
-@media (max-width: 600px) {
-  .container {
-    padding: 15px;
-  }
+/* Tanggal & waktu di dalam container (bagian bawah tengah) */
+.datetime-inside {
+  text-align: center;
+  font-weight: bold;
+  font-family: 'Nova Round', cursive;
+  font-size: 14px;
+  margin-top: 10px;
+  padding-bottom: 5px;
+  color: #fff;
+}
 
-  #chatbox {
-    height: 250px;
-  }
+/* Mode gelap */
+.dark-mode {
+  background-color: #000;
+  color: #fff;
+}
 
-  .toggle-btn,
-  .logout-btn {
-    font-size: 14px;
-    padding: 4px 8px;
-  }
+.dark-mode .container {
+  background-color: #111;
+  border-color: #fff;
+}
 
-  h2 {
-    font-size: 20px;
-  }
+.dark-mode #msgInput {
+  background-color: #333;
+  color: #fff;
+}
+
+.dark-mode #inputArea button,
+.dark-mode .logout-btn,
+.dark-mode .toggle-btn {
+  border-color: #fff;
+  color: #fff;
+}
+
+.dark-mode .datetime-inside {
+  color: #ccc;
 }
