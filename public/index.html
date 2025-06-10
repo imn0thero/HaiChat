@@ -1,137 +1,146 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Modak&family=Barrio&family=Nova+Round&display=swap" rel="stylesheet" />
-  <meta name="theme-color" content="#000000" />
-  <link rel="stylesheet" href="style.css" />
-  <title>SayHai</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Modak&family=Barrio&family=Nova+Round&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/icon-512.png" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="stylesheet" href="style.css" />
+  <title>SayHai</title>
 </head>
 <body>
 
-  <!-- Baris atas -->
-  <div class="top-bar">
-    <button class="logout-btn" onclick="logout()">Logout</button>
-    <div id="datetime" class="datetime"></div>
-    <button class="toggle-btn" onclick="toggleDarkMode()" id="modeIcon">🌞</button>
-  </div>
+  
+  <div class="container">
+    <div class="top-right">
+      <button class="toggle-btn" onclick="toggleDarkMode()" id="modeIcon">🌞</button>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
 
-  <h2 id="welcome"></h2>
-  <h3>Pengguna Online:</h3>
-  <div id="onlineUsers"></div>
+    <h2 id="welcome"></h2>
 
-  <div id="chatbox"></div>
+    <div>
+      <h3>Pengguna Online:</h3>
+      <div id="onlineUsers"></div>
+    </div>
 
-  <div id="inputArea">
-    <input type="text" id="msgInput" placeholder="Tulis pesan..." autocomplete="off" />
-    <button onclick="sendMessage()">Kirim</button>
-  </div>
+    <div id="chatbox"></div>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    function updateDateTime() {
-      const now = new Date();
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const date = now.toLocaleDateString('id-ID', options);
-      const time = now.toLocaleTimeString('id-ID');
-      document.getElementById('datetime').textContent = `${date} | ${time}`;
-    }
-    setInterval(updateDateTime, 1000);
-    updateDateTime();
+    <div id="inputArea">
+      <input type="text" id="msgInput" placeholder="Tulis pesan..." autocomplete="off" />
+      <button onclick="sendMessage()">Kirim</button>
+    </div>
+    
+  <!-- Tanggal & Waktu di atas container -->
+  <div id="datetime" class="datetime-display"></div>
+  </div>
 
-    if ("Notification" in window && Notification.permission !== "granted") {
-      Notification.requestPermission();
-    }
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    function updateDateTime() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const date = now.toLocaleDateString('id-ID', options);
+      const time = now.toLocaleTimeString('id-ID');
+      document.getElementById('datetime').textContent = `${date} | ${time}`;
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
 
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') document.body.classList.add('dark-mode');
-    updateToggleIcon(savedTheme || 'light');
+    if ("Notification" in window && Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
 
-    const username = localStorage.getItem('username');
-    const password = localStorage.getItem('password');
-    if (!username || !password) {
-      window.location.href = 'login.html';
-    }
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') document.body.classList.add('dark-mode');
+    updateToggleIcon(savedTheme || 'light');
 
-    document.getElementById('welcome').innerText = "Hai, " + username;
+    const username = localStorage.getItem('username');
+    const password = localStorage.getItem('password');
+    if (!username || !password) {
+      window.location.href = 'login.html';
+    }
 
-    const socket = io();
-    socket.emit('login', { username, password });
+    document.getElementById('welcome').innerText = "Hai, " + username;
 
-    socket.on('loginResult', data => {
-      if (!data.success) {
-        alert(data.message || 'Login gagal.');
-        localStorage.removeItem('username');
-        localStorage.removeItem('password');
-        window.location.href = 'login.html';
-        return;
-      }
-      if (data.messages && Array.isArray(data.messages)) {
-        data.messages.forEach(msg => appendMessage(msg));
-      }
-    });
+    const socket = io();
+    socket.emit('login', { username, password });
 
-    socket.on('message', data => {
-      appendMessage(data);
-      if (data.user !== username && Notification.permission === "granted") {
-        new Notification("Ping");
-      }
-    });
+    socket.on('loginResult', data => {
+      if (!data.success) {
+        alert(data.message || 'Login gagal.');
+        localStorage.removeItem('username');
+        localStorage.removeItem('password');
+        window.location.href = 'login.html';
+        return;
+      }
+      if (data.messages && Array.isArray(data.messages)) {
+        data.messages.forEach(msg => appendMessage(msg));
+      }
+    });
 
-    socket.on('userList', users => {
-      const userList = users.map(user => `<li>${escapeHtml(user)} 🔵</li>`).join('');
-      document.getElementById('onlineUsers').innerHTML = "<ul>" + userList + "</ul>";
-    });
+    socket.on('message', data => {
+      appendMessage(data);
+      if (data.user !== username && Notification.permission === "granted") {
+        new Notification("Ping");
+      }
+    });
 
-    function appendMessage(data) {
-      const div = document.createElement('div');
-      div.classList.add('message', data.user === username ? 'message-right' : 'message-left');
-      div.innerHTML = `<strong>${escapeHtml(data.user)}:</strong><br>${escapeHtml(data.text)}`;
-      const chatbox = document.getElementById('chatbox');
-      chatbox.appendChild(div);
-      chatbox.scrollTop = chatbox.scrollHeight;
-    }
+    socket.on('userList', users => {
+      const userList = users.map(user => `<li>${escapeHtml(user)} 🔵</li>`).join('');
+      document.getElementById('onlineUsers').innerHTML = "<ul>" + userList + "</ul>";
+    });
 
-    function sendMessage() {
-      const input = document.getElementById('msgInput');
-      const text = input.value.trim();
-      if (text) {
-        socket.emit('message', { text });
-        input.value = '';
-      }
-    }
+    function appendMessage(data) {
+      const div = document.createElement('div');
+      div.classList.add('message', data.user === username ? 'message-right' : 'message-left');
+      div.innerHTML = `<strong>${escapeHtml(data.user)}:</strong><br>${escapeHtml(data.text)}`;
+      const chatbox = document.getElementById('chatbox');
+      chatbox.appendChild(div);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
 
-    function logout() {
-      localStorage.removeItem('username');
-      localStorage.removeItem('password');
-      socket.emit('logout');
-      window.location.href = 'login.html';
-    }
+    function sendMessage() {
+      const input = document.getElementById('msgInput');
+      const text = input.value.trim();
+      if (text) {
+        socket.emit('message', { text });
+        input.value = '';
+      }
+    }
 
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
-      const mode = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-      localStorage.setItem('theme', mode);
-      updateToggleIcon(mode);
-    }
+    function logout() {
+      localStorage.removeItem('username');
+      localStorage.removeItem('password');
+      socket.emit('logout');
+      window.location.href = 'login.html';
+    }
 
-    function updateToggleIcon(mode) {
-      const icon = document.getElementById('modeIcon');
-      icon.textContent = mode === 'dark' ? '🌜' : '🌞';
-    }
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const mode = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+      localStorage.setItem('theme', mode);
+      updateToggleIcon(mode);
+    }
 
-    function escapeHtml(str) {
-      return str.replace(/[&<>"']/g, m => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-      })[m]);
-    }
-  </script>
+    function updateToggleIcon(mode) {
+      const icon = document.getElementById('modeIcon');
+      icon.textContent = mode === 'dark' ? '🌜' : '🌞';
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      })[m]);
+    }
+  </script>
 </body>
 </html>
