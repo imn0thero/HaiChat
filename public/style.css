@@ -1,14 +1,18 @@
 /* Font dan warna dasar */
-body {
+html, body {
   margin: 0;
   padding: 0;
   font-family: 'Nova Round', cursive;
   background-color: #000;
   color: #fff;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+}
+
+body {
+  flex-direction: column;
 }
 
 .container {
@@ -20,6 +24,10 @@ body {
   background-color: #111;
   position: relative;
   box-shadow: 0 0 10px #444;
+  display: flex;
+  flex-direction: column;
+  min-height: 95vh;
+  justify-content: space-between;
 }
 
 /* Tombol pojok kanan atas */
@@ -67,7 +75,7 @@ h2, h3 {
 
 /* Chatbox */
 #chatbox {
-  height: 60vh;
+  flex: 1;
   overflow-y: auto;
   background-color: #222;
   border-radius: 10px;
@@ -100,6 +108,7 @@ h2, h3 {
 #inputArea {
   display: flex;
   gap: 10px;
+  margin-top: 10px;
 }
 
 #msgInput {
@@ -168,4 +177,3 @@ h2, h3 {
 .dark-mode .datetime-inside {
   color: #ccc;
 }
-
