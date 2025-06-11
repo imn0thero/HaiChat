@@ -14,7 +14,6 @@
 </head>
 <body>
 
-  
   <div class="container">
     <div class="top-right">
       <button class="toggle-btn" onclick="toggleDarkMode()" id="modeIcon">🌞</button>
@@ -34,9 +33,9 @@
       <input type="text" id="msgInput" placeholder="Tulis pesan..." autocomplete="off" />
       <button onclick="sendMessage()">Kirim</button>
     </div>
-    
-  <!-- Tanggal & Waktu di atas container -->
-  <div id="datetime" class="datetime-display"></div>
+
+    <!-- Tanggal & Waktu -->
+    <div id="datetime" class="datetime-display"></div>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
@@ -98,7 +97,19 @@
     function appendMessage(data) {
       const div = document.createElement('div');
       div.classList.add('message', data.user === username ? 'message-right' : 'message-left');
-      div.innerHTML = `<strong>${escapeHtml(data.user)}:</strong><br>${escapeHtml(data.text)}`;
+
+      // Format waktu kirim pesan
+      const time = new Date(data.time).toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      div.innerHTML = `
+        <strong>${escapeHtml(data.user)}:</strong><br>
+        ${escapeHtml(data.text)}<br>
+        <span style="font-size: 0.75em; color: gray;">🕒 ${time}</span>
+      `;
+
       const chatbox = document.getElementById('chatbox');
       chatbox.appendChild(div);
       chatbox.scrollTop = chatbox.scrollHeight;
