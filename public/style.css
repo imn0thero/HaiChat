@@ -9,6 +9,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
@@ -20,6 +21,7 @@ body {
   background-color: #fff;
   position: relative;
   box-shadow: 0 0 10px #000;
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
 /* Tombol pojok kanan atas */
@@ -40,6 +42,7 @@ body {
   border-radius: 10px;
   cursor: pointer;
   font-family: 'Nova Round', cursive;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
 .toggle-btn:hover,
@@ -74,6 +77,7 @@ h2, h3 {
   padding: 10px;
   margin: 10px 0;
   border: 1px solid #000;
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
 .message {
@@ -85,7 +89,8 @@ h2, h3 {
 }
 
 .message-left {
-  background-color: #000;
+  background-color: #eee;
+  color: #000;
   text-align: left;
 }
 
@@ -110,6 +115,7 @@ h2, h3 {
   background-color: #fff;
   color: #000;
   font-family: 'Nova Round', cursive;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
 #msgInput::placeholder {
@@ -124,6 +130,7 @@ h2, h3 {
   color: #000;
   cursor: pointer;
   font-family: 'Nova Round', cursive;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 #inputArea button:hover {
@@ -140,9 +147,12 @@ h2, h3 {
   margin-top: 10px;
   padding-bottom: 5px;
   color: #000;
+  transition: color 0.3s;
 }
 
-/* Mode gelap */
+/* ======================= */
+/* MODE GELAP STARTS HERE */
+/* ======================= */
 .dark-mode {
   background-color: #000;
   color: #fff;
@@ -151,11 +161,32 @@ h2, h3 {
 .dark-mode .container {
   background-color: #000;
   border-color: #fff;
+  box-shadow: 0 0 10px #fff;
+}
+
+.dark-mode #chatbox {
+  background-color: #111;
+  border-color: #fff;
+}
+
+.dark-mode .message-left {
+  background-color: #333;
+  color: #fff;
+}
+
+.dark-mode .message-right {
+  background-color: #fff;
+  color: #000;
 }
 
 .dark-mode #msgInput {
-  background-color: #000;
+  background-color: #111;
   color: #fff;
+  border-color: #fff;
+}
+
+.dark-mode #msgInput::placeholder {
+  color: #aaa;
 }
 
 .dark-mode #inputArea button,
@@ -163,6 +194,13 @@ h2, h3 {
 .dark-mode .toggle-btn {
   border-color: #fff;
   color: #fff;
+}
+
+.dark-mode #inputArea button:hover,
+.dark-mode .logout-btn:hover,
+.dark-mode .toggle-btn:hover {
+  background-color: #fff;
+  color: #000;
 }
 
 .dark-mode .datetime-inside {
