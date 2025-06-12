@@ -3,8 +3,8 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Nova Round', cursive;
-  background-color: #000;
-  color: #fff;
+  background-color: #fff;
+  color: #000;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,14 +12,14 @@ body {
 }
 
 .container {
-  border: 2px solid #fff;
+  border: 2px solid #000;
   border-radius: 15px;
   padding: 20px;
   max-width: 400px;
   width: 100%;
-  background-color: #000;
+  background-color: #fff;
   position: relative;
-  box-shadow: 0 0 10px #fff;
+  box-shadow: 0 0 10px #000;
 }
 
 /* Tombol pojok kanan atas */
@@ -34,8 +34,8 @@ body {
 .toggle-btn,
 .logout-btn {
   background-color: transparent;
-  color: #fff;
-  border: 2px solid #fff;
+  color: #000;
+  border: 2px solid #000;
   padding: 6px 12px;
   border-radius: 10px;
   cursor: pointer;
@@ -44,8 +44,8 @@ body {
 
 .toggle-btn:hover,
 .logout-btn:hover {
-  background-color: #fff;
-  color: #000;
+  background-color: #000;
+  color: #fff;
 }
 
 /* Judul dan pengguna online */
@@ -69,11 +69,11 @@ h2, h3 {
 #chatbox {
   height: 300px;
   overflow-y: auto;
-  background-color: #000;
+  background-color: #fff;
   border-radius: 10px;
   padding: 10px;
   margin: 10px 0;
-  border: 1px solid #fff;
+  border: 1px solid #000;
 }
 
 .message {
@@ -85,13 +85,13 @@ h2, h3 {
 }
 
 .message-left {
-  background-color: #111;
+  background-color: #000;
   text-align: left;
 }
 
 .message-right {
-  background-color: #fff;
-  color: #000;
+  background-color: #000;
+  color: #fff;
   text-align: right;
   margin-left: auto;
 }
@@ -106,29 +106,29 @@ h2, h3 {
   flex: 1;
   padding: 10px;
   border-radius: 10px;
-  border: 1px solid #fff;
-  background-color: #000;
-  color: #fff;
+  border: 1px solid #000;
+  background-color: #fff;
+  color: #000;
   font-family: 'Nova Round', cursive;
 }
 
 #msgInput::placeholder {
-  color: #fff;
+  color: #000;
 }
 
 #inputArea button {
   padding: 10px 20px;
   border-radius: 10px;
-  border: 2px solid #fff;
+  border: 2px solid #000;
   background-color: transparent;
-  color: #fff;
+  color: #000;
   cursor: pointer;
   font-family: 'Nova Round', cursive;
 }
 
 #inputArea button:hover {
-  background-color: #fff;
-  color: #000;
+  background-color: #000;
+  color: #fff;
 }
 
 /* Tanggal & waktu di dalam container (bagian bawah tengah) */
@@ -139,7 +139,7 @@ h2, h3 {
   font-size: 14px;
   margin-top: 10px;
   padding-bottom: 5px;
-  color: #fff;
+  color: #000;
 }
 
 /* Mode gelap */
