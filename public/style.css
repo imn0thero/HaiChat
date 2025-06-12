@@ -17,9 +17,9 @@ body {
   padding: 20px;
   max-width: 400px;
   width: 100%;
-  background-color: #111;
+  background-color: #000;
   position: relative;
-  box-shadow: 0 0 10px #444;
+  box-shadow: 0 0 10px #fff;
 }
 
 /* Tombol pojok kanan atas */
@@ -69,11 +69,11 @@ h2, h3 {
 #chatbox {
   height: 300px;
   overflow-y: auto;
-  background-color: #222;
+  background-color: #000;
   border-radius: 10px;
   padding: 10px;
   margin: 10px 0;
-  border: 1px solid #555;
+  border: 1px solid #fff;
 }
 
 .message {
@@ -85,13 +85,13 @@ h2, h3 {
 }
 
 .message-left {
-  background-color: #333;
+  background-color: #111;
   text-align: left;
 }
 
 .message-right {
-  background-color: #007bff;
-  color: #fff;
+  background-color: #fff;
+  color: #000;
   text-align: right;
   margin-left: auto;
 }
@@ -106,14 +106,14 @@ h2, h3 {
   flex: 1;
   padding: 10px;
   border-radius: 10px;
-  border: 1px solid #888;
-  background-color: #333;
+  border: 1px solid #fff;
+  background-color: #000;
   color: #fff;
   font-family: 'Nova Round', cursive;
 }
 
 #msgInput::placeholder {
-  color: #aaa;
+  color: #fff;
 }
 
 #inputArea button {
@@ -149,12 +149,12 @@ h2, h3 {
 }
 
 .dark-mode .container {
-  background-color: #111;
+  background-color: #000;
   border-color: #fff;
 }
 
 .dark-mode #msgInput {
-  background-color: #333;
+  background-color: #000;
   color: #fff;
 }
 
@@ -166,5 +166,5 @@ h2, h3 {
 }
 
 .dark-mode .datetime-inside {
-  color: #ccc;
+  color: #fff;
 }
