@@ -76,7 +76,7 @@ h2, h3 {
   border-radius: 10px;
   padding: 10px;
   margin: 10px 0;
-  border: 1px solid #000;
+  border: 2px solid #000;
   transition: background-color 0.3s, border-color 0.3s;
 }
 
@@ -89,16 +89,16 @@ h2, h3 {
 }
 
 .message-left {
-  border: 3px solid #000;
-  border-radius: 10px;
+  border: 2px solid #000;
+  border-radius: 20px;
   background-color: #fff;
   color: #000;
   text-align: left;
 }
 
 .message-right {
-  border: 3px solid #000;
-  border-radius: 10px;
+  border: 2px solid #000;
+  border-radius: 20px;
   background-color: #fff;
   color: #000;
   text-align: right;
@@ -169,20 +169,20 @@ h2, h3 {
 }
 
 .dark-mode #chatbox {
-  background-color: #111;
+  background-color: #000;
   border-color: #fff;
 }
 
 .dark-mode .message-left {
-  border: 3px solid #fff;
-  border-radius: 10px;
+  border: 2px solid #fff;
+  border-radius: 20px;
   background-color: #000;
   color: #fff;
 }
 
 .dark-mode .message-right {
-  border: 3px solid #fff;
-  border-radius: 10px;
+  border: 2px solid #fff;
+  border-radius: 20px;
   background-color: #000;
   color: #fff;
 }
